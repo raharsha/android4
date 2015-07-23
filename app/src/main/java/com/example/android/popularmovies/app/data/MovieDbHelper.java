@@ -19,21 +19,21 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.android.popularmovies.app.data.WeatherContract.LocationEntry;
-import com.example.android.popularmovies.app.data.WeatherContract.WeatherEntry;
-import com.example.android.popularmovies.app.data.WeatherContract.MovieEntry;
+import com.example.android.popularmovies.app.data.MovieContract.LocationEntry;
+import com.example.android.popularmovies.app.data.MovieContract.WeatherEntry;
+import com.example.android.popularmovies.app.data.MovieContract.MovieEntry;
 
 /**
  * Manages a local database for weather data.
  */
-public class WeatherDbHelper extends SQLiteOpenHelper {
+public class MovieDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 4;
 
     static final String DATABASE_NAME = "movies.db";
 
-    public WeatherDbHelper(Context context) {
+    public MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -49,15 +49,15 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 LocationEntry.COLUMN_COORD_LONG + " REAL NOT NULL " +
                 " );";
 
-        final String SQL_CREATE_MOVIES_TABLE = "CREATE TABLE " + WeatherContract.MovieEntry.TABLE_NAME + " (" +
-                WeatherContract.MovieEntry._ID + " INTEGER PRIMARY KEY," +
-                WeatherContract.MovieEntry.COLUMN_DATE + " TEXT NOT NULL, " +
-                WeatherContract.MovieEntry.COLUMN_MOVIE_ID + " TEXT UNIQUE NOT NULL, " +
-                WeatherContract.MovieEntry.COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL, " +
-                WeatherContract.MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
-                WeatherContract.MovieEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
-                WeatherContract.MovieEntry.COLUMN_RELEASE_DATE + " INTEGER NOT NULL, " +
-                WeatherContract.MovieEntry.COLUMN_VOTE_AVERAGE + " TEXT NOT NULL " +
+        final String SQL_CREATE_MOVIES_TABLE = "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + " (" +
+                MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY," +
+                MovieContract.MovieEntry.COLUMN_DATE + " TEXT NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " TEXT UNIQUE NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " INTEGER NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " TEXT NOT NULL " +
                 " );";
 
 

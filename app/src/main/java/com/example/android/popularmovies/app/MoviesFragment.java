@@ -33,15 +33,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.android.popularmovies.app.data.WeatherContract;
-import com.example.android.popularmovies.app.sync.SunshineSyncAdapter;
+import com.example.android.popularmovies.app.data.MovieContract;
+import com.example.android.popularmovies.app.sync.MovieSyncAdapter;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
  */
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    public static final String LOG_TAG = ForecastFragment.class.getSimpleName();
-    private ForecastAdapter mForecastAdapter;
+public class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final String LOG_TAG = MoviesFragment.class.getSimpleName();
+    private MoviesAdapter mMoviesAdapter;
 
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
@@ -59,15 +59,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             // On the one hand, that's annoying.  On the other, you can search the weather table
             // using the location set by the user, which is only in the Location table.
             // So the convenience is worth it.
-            WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
-            WeatherContract.WeatherEntry.COLUMN_DATE,
-            WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
-            WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
-            WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
-            WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
-            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
-            WeatherContract.LocationEntry.COLUMN_COORD_LAT,
-            WeatherContract.LocationEntry.COLUMN_COORD_LONG
+            MovieContract.WeatherEntry.TABLE_NAME + "." + MovieContract.WeatherEntry._ID,
+            MovieContract.WeatherEntry.COLUMN_DATE,
+            MovieContract.WeatherEntry.COLUMN_SHORT_DESC,
+            MovieContract.WeatherEntry.COLUMN_MAX_TEMP,
+            MovieContract.WeatherEntry.COLUMN_MIN_TEMP,
+            MovieContract.LocationEntry.COLUMN_LOCATION_SETTING,
+            MovieContract.WeatherEntry.COLUMN_WEATHER_ID,
+            MovieContract.LocationEntry.COLUMN_COORD_LAT,
+            MovieContract.LocationEntry.COLUMN_COORD_LONG
     };
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
@@ -89,14 +89,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             // On the one hand, that's annoying.  On the other, you can search the weather table
             // using the location set by the user, which is only in the Location table.
             // So the convenience is worth it.
-            WeatherContract.MovieEntry.TABLE_NAME + "." + WeatherContract.MovieEntry._ID,
-            WeatherContract.MovieEntry.COLUMN_DATE,
-            WeatherContract.MovieEntry.COLUMN_MOVIE_ID,
-            WeatherContract.MovieEntry.COLUMN_ORIGINAL_TITLE,
-            WeatherContract.MovieEntry.COLUMN_POSTER_PATH,
-            WeatherContract.MovieEntry.COLUMN_OVERVIEW,
-            WeatherContract.MovieEntry.COLUMN_VOTE_AVERAGE,
-            WeatherContract.MovieEntry.COLUMN_RELEASE_DATE
+            MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
+            MovieContract.MovieEntry.COLUMN_DATE,
+            MovieContract.MovieEntry.COLUMN_MOVIE_ID,
+            MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE,
+            MovieContract.MovieEntry.COLUMN_POSTER_PATH,
+            MovieContract.MovieEntry.COLUMN_OVERVIEW,
+            MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+            MovieContract.MovieEntry.COLUMN_RELEASE_DATE
     };
 
     // These indices are tied to MOVIE_COLUMNS.  If MOVIE_COLUMNS changes, these
@@ -123,7 +123,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         public void onItemSelected(Uri dateUri);
     }
 
-    public ForecastFragment() {
+    public MoviesFragment() {
     }
 
     @Override
@@ -160,15 +160,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // The ForecastAdapter will take data from a source and
+        // The MoviesAdapter will take data from a source and
         // use it to populate the ListView it's attached to.
-        mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
+        mMoviesAdapter = new MoviesAdapter(getActivity(), null, 0);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
         mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        mListView.setAdapter(mForecastAdapter);
+        mListView.setAdapter(mMoviesAdapter);
         // We'll call our MainActivity
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -180,7 +180,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
                     ((Callback) getActivity())
-                            .onItemSelected(WeatherContract.MovieEntry.buildMovieWithId(cursor.getLong(COL_MOVIE_ID)
+                            .onItemSelected(MovieContract.MovieEntry.buildMovieWithId(cursor.getLong(COL_MOVIE_ID)
                             ));
                 }
                 mPosition = position;
@@ -198,7 +198,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
 
-        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+        mMoviesAdapter.setUseTodayLayout(mUseTodayLayout);
 
         return rootView;
     }
@@ -216,15 +216,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
-        SunshineSyncAdapter.syncImmediately(getActivity());
+        MovieSyncAdapter.syncImmediately(getActivity());
     }
 
     private void openPreferredLocationInMap() {
         // Using the URI scheme for showing a location found on a map.  This super-handy
         // intent can is detailed in the "Common Intents" page of Android's developer site:
         // http://developer.android.com/guide/components/intents-common.html#Maps
-        if ( null != mForecastAdapter ) {
-            Cursor c = mForecastAdapter.getCursor();
+        if ( null != mMoviesAdapter) {
+            Cursor c = mMoviesAdapter.getCursor();
             if ( null != c ) {
                 c.moveToPosition(0);
                 String posLat = c.getString(COL_COORD_LAT);
@@ -264,10 +264,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // dates after or including today.
 
         // Sort order:  Ascending, by date.
-        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+        String sortOrder = MovieContract.WeatherEntry.COLUMN_DATE + " ASC";
 
         String locationSetting = Utility.getPreferredLocation(getActivity());
-        Uri weatherForLocationUri = WeatherContract.MovieEntry.buildWeatherLocationWithStartDate();
+        Uri weatherForLocationUri = MovieContract.MovieEntry.buildWeatherLocationWithStartDate();
 
 //        return new CursorLoader(getActivity(),
 //                weatherForLocationUri,
@@ -285,7 +285,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mForecastAdapter.swapCursor(data);
+        mMoviesAdapter.swapCursor(data);
         if (mPosition != ListView.INVALID_POSITION) {
             // If we don't need to restart the loader, and there's a desired position to restore
             // to, do so now.
@@ -295,13 +295,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mForecastAdapter.swapCursor(null);
+        mMoviesAdapter.swapCursor(null);
     }
 
     public void setUseTodayLayout(boolean useTodayLayout) {
         mUseTodayLayout = useTodayLayout;
-        if (mForecastAdapter != null) {
-            mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+        if (mMoviesAdapter != null) {
+            mMoviesAdapter.setUseTodayLayout(mUseTodayLayout);
         }
     }
 }

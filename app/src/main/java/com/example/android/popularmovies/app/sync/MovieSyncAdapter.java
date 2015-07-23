@@ -30,7 +30,7 @@ import android.util.Log;
 import com.example.android.popularmovies.app.MainActivity;
 import com.example.android.popularmovies.app.R;
 import com.example.android.popularmovies.app.Utility;
-import com.example.android.popularmovies.app.data.WeatherContract;
+import com.example.android.popularmovies.app.data.MovieContract;
 import com.uwetrottmann.tmdb.Tmdb;
 import com.uwetrottmann.tmdb.entities.Movie;
 import com.uwetrottmann.tmdb.entities.MovieResultsPage;
@@ -49,8 +49,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Vector;
 
-public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
-    public final String LOG_TAG = SunshineSyncAdapter.class.getSimpleName();
+public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
+    public final String LOG_TAG = MovieSyncAdapter.class.getSimpleName();
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
     public static final int SYNC_INTERVAL = 60 * 180;
@@ -62,10 +62,10 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
     private static final String[] NOTIFY_WEATHER_PROJECTION = new String[] {
-            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
-            WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
-            WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
-            WeatherContract.WeatherEntry.COLUMN_SHORT_DESC
+            MovieContract.WeatherEntry.COLUMN_WEATHER_ID,
+            MovieContract.WeatherEntry.COLUMN_MAX_TEMP,
+            MovieContract.WeatherEntry.COLUMN_MIN_TEMP,
+            MovieContract.WeatherEntry.COLUMN_SHORT_DESC
     };
 
     // these indices must match the projection
@@ -74,7 +74,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final int INDEX_MIN_TEMP = 2;
     private static final int INDEX_SHORT_DESC = 3;
 
-    public SunshineSyncAdapter(Context context, boolean autoInitialize) {
+    public MovieSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         Tmdb tmdb = new Tmdb();
         tmdb.setApiKey("e95feea469573da8277773d047559d1a");
@@ -92,13 +92,13 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         for (int i = 0; i < results.size(); i++) {
             ContentValues weatherValues = new ContentValues();
             Movie movie = results.get(i);
-            weatherValues.put(WeatherContract.MovieEntry.COLUMN_MOVIE_ID, movie.id);
-            weatherValues.put(WeatherContract.MovieEntry.COLUMN_DATE, System.currentTimeMillis());
-            weatherValues.put(WeatherContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movie.original_title);
-            weatherValues.put(WeatherContract.MovieEntry.COLUMN_OVERVIEW, movie.overview);
-            weatherValues.put(WeatherContract.MovieEntry.COLUMN_POSTER_PATH, movie.poster_path);
-            weatherValues.put(WeatherContract.MovieEntry.COLUMN_RELEASE_DATE, movie.release_date.getTime());
-            weatherValues.put(WeatherContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.vote_average);
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.id);
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_DATE, System.currentTimeMillis());
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movie.original_title);
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movie.overview);
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.poster_path);
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.release_date.getTime());
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.vote_average);
 
             cVVector.add(weatherValues);
         }
@@ -107,11 +107,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         if ( cVVector.size() > 0 ) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
             cVVector.toArray(cvArray);
-            getContext().getContentResolver().bulkInsert(WeatherContract.MovieEntry.CONTENT_URI, cvArray);
+            getContext().getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, cvArray);
 
             // delete old data so we don't build up an endless history
-//                getContext().getContentResolver().delete(WeatherContract.WeatherEntry.CONTENT_URI,
-//                        WeatherContract.WeatherEntry.COLUMN_DATE + " <= ?",
+//                getContext().getContentResolver().delete(MovieContract.WeatherEntry.CONTENT_URI,
+//                        MovieContract.WeatherEntry.COLUMN_DATE + " <= ?",
 //                        new String[] {Long.toString(dayTime.setJulianDay(julianStartDay-1))});
 
 //                notifyWeather();
@@ -318,16 +318,16 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 ContentValues weatherValues = new ContentValues();
 
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_LOC_KEY, locationId);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DATE, dateTime);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_HUMIDITY, humidity);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_PRESSURE, pressure);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WIND_SPEED, windSpeed);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DEGREES, windDirection);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP, high);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP, low);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC, description);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID, weatherId);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_LOC_KEY, locationId);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_DATE, dateTime);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_HUMIDITY, humidity);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_PRESSURE, pressure);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_WIND_SPEED, windSpeed);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_DEGREES, windDirection);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_MAX_TEMP, high);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_MIN_TEMP, low);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_SHORT_DESC, description);
+                weatherValues.put(MovieContract.WeatherEntry.COLUMN_WEATHER_ID, weatherId);
 
                 cVVector.add(weatherValues);
             }
@@ -337,11 +337,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             if ( cVVector.size() > 0 ) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
-                getContext().getContentResolver().bulkInsert(WeatherContract.WeatherEntry.CONTENT_URI, cvArray);
+                getContext().getContentResolver().bulkInsert(MovieContract.WeatherEntry.CONTENT_URI, cvArray);
 
                 // delete old data so we don't build up an endless history
-                getContext().getContentResolver().delete(WeatherContract.WeatherEntry.CONTENT_URI,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + " <= ?",
+                getContext().getContentResolver().delete(MovieContract.WeatherEntry.CONTENT_URI,
+                        MovieContract.WeatherEntry.COLUMN_DATE + " <= ?",
                         new String[] {Long.toString(dayTime.setJulianDay(julianStartDay-1))});
 
                 notifyWeather();
@@ -372,7 +372,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 // Last sync was more than 1 day ago, let's send a notification with the weather.
                 String locationQuery = Utility.getPreferredLocation(context);
 
-                Uri weatherUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationQuery, System.currentTimeMillis());
+                Uri weatherUri = MovieContract.WeatherEntry.buildWeatherLocationWithDate(locationQuery, System.currentTimeMillis());
 
                 // we'll query our contentProvider, as always
                 Cursor cursor = context.getContentResolver().query(weatherUri, NOTIFY_WEATHER_PROJECTION, null, null, null);
@@ -451,14 +451,14 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
         // First, check if the location with this city name exists in the db
         Cursor locationCursor = getContext().getContentResolver().query(
-                WeatherContract.LocationEntry.CONTENT_URI,
-                new String[]{WeatherContract.LocationEntry._ID},
-                WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
+                MovieContract.LocationEntry.CONTENT_URI,
+                new String[]{MovieContract.LocationEntry._ID},
+                MovieContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
                 new String[]{locationSetting},
                 null);
 
         if (locationCursor.moveToFirst()) {
-            int locationIdIndex = locationCursor.getColumnIndex(WeatherContract.LocationEntry._ID);
+            int locationIdIndex = locationCursor.getColumnIndex(MovieContract.LocationEntry._ID);
             locationId = locationCursor.getLong(locationIdIndex);
         } else {
             // Now that the content provider is set up, inserting rows of data is pretty simple.
@@ -467,14 +467,14 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
             // Then add the data, along with the corresponding name of the data type,
             // so the content provider knows what kind of value is being inserted.
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
+            locationValues.put(MovieContract.LocationEntry.COLUMN_CITY_NAME, cityName);
+            locationValues.put(MovieContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
+            locationValues.put(MovieContract.LocationEntry.COLUMN_COORD_LAT, lat);
+            locationValues.put(MovieContract.LocationEntry.COLUMN_COORD_LONG, lon);
 
             // Finally, insert location data into the database.
             Uri insertedUri = getContext().getContentResolver().insert(
-                    WeatherContract.LocationEntry.CONTENT_URI,
+                    MovieContract.LocationEntry.CONTENT_URI,
                     locationValues
             );
 
@@ -561,7 +561,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         /*
          * Since we've created an account
          */
-        SunshineSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
+        MovieSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
 
         /*
          * Without calling setSyncAutomatically, our periodic sync will not be enabled.

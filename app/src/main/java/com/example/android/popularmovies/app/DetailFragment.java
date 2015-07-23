@@ -34,7 +34,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.popularmovies.app.data.WeatherContract;
+import com.example.android.popularmovies.app.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -54,13 +54,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int DETAIL_LOADER = 0;
 
     private static final String[] DETAIL_COLUMNS = {
-            WeatherContract.MovieEntry.COLUMN_DATE,
-            WeatherContract.MovieEntry.COLUMN_MOVIE_ID,
-            WeatherContract.MovieEntry.COLUMN_ORIGINAL_TITLE,
-            WeatherContract.MovieEntry.COLUMN_POSTER_PATH,
-            WeatherContract.MovieEntry.COLUMN_OVERVIEW,
-            WeatherContract.MovieEntry.COLUMN_VOTE_AVERAGE,
-            WeatherContract.MovieEntry.COLUMN_RELEASE_DATE
+            MovieContract.MovieEntry.COLUMN_DATE,
+            MovieContract.MovieEntry.COLUMN_MOVIE_ID,
+            MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE,
+            MovieContract.MovieEntry.COLUMN_POSTER_PATH,
+            MovieContract.MovieEntry.COLUMN_OVERVIEW,
+            MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+            MovieContract.MovieEntry.COLUMN_RELEASE_DATE
     };
 
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
@@ -140,8 +140,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         // replace the uri, since the location has changed
         Uri uri = mUri;
         if (null != uri) {
-            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
-            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            long date = MovieContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = MovieContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
             mUri = updatedUri;
             getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
         }

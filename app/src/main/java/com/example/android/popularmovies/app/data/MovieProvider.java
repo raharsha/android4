@@ -24,11 +24,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-public class WeatherProvider extends ContentProvider {
+public class MovieProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private WeatherDbHelper mOpenHelper;
+    private MovieDbHelper mOpenHelper;
 
     static final int WEATHER = 100;
     static final int MOVIE = 400;
@@ -47,39 +47,39 @@ public class WeatherProvider extends ContentProvider {
         //This is an inner join which looks like
         //weather INNER JOIN location ON weather.location_id = location._id
         sWeatherByLocationSettingQueryBuilder.setTables(
-                WeatherContract.WeatherEntry.TABLE_NAME + " INNER JOIN " +
-                        WeatherContract.LocationEntry.TABLE_NAME +
-                        " ON " + WeatherContract.WeatherEntry.TABLE_NAME +
-                        "." + WeatherContract.WeatherEntry.COLUMN_LOC_KEY +
-                        " = " + WeatherContract.LocationEntry.TABLE_NAME +
-                        "." + WeatherContract.LocationEntry._ID);
-        sMovieByIdQueryBuilder.setTables(WeatherContract.MovieEntry.TABLE_NAME );
+                MovieContract.WeatherEntry.TABLE_NAME + " INNER JOIN " +
+                        MovieContract.LocationEntry.TABLE_NAME +
+                        " ON " + MovieContract.WeatherEntry.TABLE_NAME +
+                        "." + MovieContract.WeatherEntry.COLUMN_LOC_KEY +
+                        " = " + MovieContract.LocationEntry.TABLE_NAME +
+                        "." + MovieContract.LocationEntry._ID);
+        sMovieByIdQueryBuilder.setTables(MovieContract.MovieEntry.TABLE_NAME );
     }
 
     //location.location_setting = ?
     private static final String sLocationSettingSelection =
-            WeatherContract.LocationEntry.TABLE_NAME+
-                    "." + WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? ";
+            MovieContract.LocationEntry.TABLE_NAME+
+                    "." + MovieContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? ";
 
     private static final String sMovieSelection =
-            WeatherContract.MovieEntry.TABLE_NAME+
-                    "." + WeatherContract.MovieEntry.COLUMN_MOVIE_ID + " = ? ";
+            MovieContract.MovieEntry.TABLE_NAME+
+                    "." + MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? ";
 
     //location.location_setting = ? AND date >= ?
     private static final String sLocationSettingWithStartDateSelection =
-            WeatherContract.LocationEntry.TABLE_NAME+
-                    "." + WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
-                    WeatherContract.WeatherEntry.COLUMN_DATE + " >= ? ";
+            MovieContract.LocationEntry.TABLE_NAME+
+                    "." + MovieContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
+                    MovieContract.WeatherEntry.COLUMN_DATE + " >= ? ";
 
     //location.location_setting = ? AND date = ?
     private static final String sLocationSettingAndDaySelection =
-            WeatherContract.LocationEntry.TABLE_NAME +
-                    "." + WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
-                    WeatherContract.WeatherEntry.COLUMN_DATE + " = ? ";
+            MovieContract.LocationEntry.TABLE_NAME +
+                    "." + MovieContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
+                    MovieContract.WeatherEntry.COLUMN_DATE + " = ? ";
 
     private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
-        String locationSetting = WeatherContract.WeatherEntry.getLocationSettingFromUri(uri);
-        long startDate = WeatherContract.WeatherEntry.getStartDateFromUri(uri);
+        String locationSetting = MovieContract.WeatherEntry.getLocationSettingFromUri(uri);
+        long startDate = MovieContract.WeatherEntry.getStartDateFromUri(uri);
 
         String[] selectionArgs;
         String selection;
@@ -103,7 +103,7 @@ public class WeatherProvider extends ContentProvider {
     }
 
     private Cursor getMovieById(Uri uri, String[] projection, String sortOrder) {
-        String movieId = WeatherContract.MovieEntry.getMovieIdFromUri(uri);
+        String movieId = MovieContract.MovieEntry.getMovieIdFromUri(uri);
 
         String selection = sMovieSelection;
         String[] selectionArgs = new String[]{movieId};
@@ -120,8 +120,8 @@ public class WeatherProvider extends ContentProvider {
 
     private Cursor getWeatherByLocationSettingAndDate(
             Uri uri, String[] projection, String sortOrder) {
-        String locationSetting = WeatherContract.WeatherEntry.getLocationSettingFromUri(uri);
-        long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+        String locationSetting = MovieContract.WeatherEntry.getLocationSettingFromUri(uri);
+        long date = MovieContract.WeatherEntry.getDateFromUri(uri);
 
         return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
@@ -147,26 +147,26 @@ public class WeatherProvider extends ContentProvider {
         // found.  The code passed into the constructor represents the code to return for the root
         // URI.  It's common to use NO_MATCH as the code for this case.
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = WeatherContract.CONTENT_AUTHORITY;
+        final String authority = MovieContract.CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, WeatherContract.PATH_WEATHER, WEATHER);
-        matcher.addURI(authority, WeatherContract.PATH_WEATHER + "/*", WEATHER_WITH_LOCATION);
-        matcher.addURI(authority, WeatherContract.PATH_WEATHER + "/*/#", WEATHER_WITH_LOCATION_AND_DATE);
+        matcher.addURI(authority, MovieContract.PATH_WEATHER, WEATHER);
+        matcher.addURI(authority, MovieContract.PATH_WEATHER + "/*", WEATHER_WITH_LOCATION);
+        matcher.addURI(authority, MovieContract.PATH_WEATHER + "/*/#", WEATHER_WITH_LOCATION_AND_DATE);
 
-        matcher.addURI(authority, WeatherContract.PATH_LOCATION, LOCATION);
-        matcher.addURI(authority, WeatherContract.PATH_MOVIES, MOVIE);
-        matcher.addURI(authority, WeatherContract.PATH_MOVIES + "/*", MOVIE_WITH_ID);
+        matcher.addURI(authority, MovieContract.PATH_LOCATION, LOCATION);
+        matcher.addURI(authority, MovieContract.PATH_MOVIES, MOVIE);
+        matcher.addURI(authority, MovieContract.PATH_MOVIES + "/*", MOVIE_WITH_ID);
         return matcher;
     }
 
     /*
-        Students: We've coded this for you.  We just create a new WeatherDbHelper for later use
+        Students: We've coded this for you.  We just create a new MovieDbHelper for later use
         here.
      */
     @Override
     public boolean onCreate() {
-        mOpenHelper = new WeatherDbHelper(getContext());
+        mOpenHelper = new MovieDbHelper(getContext());
         return true;
     }
 
@@ -184,17 +184,17 @@ public class WeatherProvider extends ContentProvider {
         switch (match) {
             // Student: Uncomment and fill out these two cases
             case WEATHER_WITH_LOCATION_AND_DATE:
-                return WeatherContract.WeatherEntry.CONTENT_ITEM_TYPE;
+                return MovieContract.WeatherEntry.CONTENT_ITEM_TYPE;
             case WEATHER_WITH_LOCATION:
-                return WeatherContract.WeatherEntry.CONTENT_TYPE;
+                return MovieContract.WeatherEntry.CONTENT_TYPE;
             case MOVIE:
-                return WeatherContract.MovieEntry.CONTENT_TYPE;
+                return MovieContract.MovieEntry.CONTENT_TYPE;
             case MOVIE_WITH_ID:
-                return WeatherContract.MovieEntry.CONTENT_ITEM_TYPE;
+                return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
             case WEATHER:
-                return WeatherContract.WeatherEntry.CONTENT_TYPE;
+                return MovieContract.WeatherEntry.CONTENT_TYPE;
             case LOCATION:
-                return WeatherContract.LocationEntry.CONTENT_TYPE;
+                return MovieContract.LocationEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -215,7 +215,7 @@ public class WeatherProvider extends ContentProvider {
             }
             case MOVIE: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        WeatherContract.MovieEntry.TABLE_NAME,
+                        MovieContract.MovieEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -237,7 +237,7 @@ public class WeatherProvider extends ContentProvider {
             // "weather"
             case WEATHER: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        MovieContract.WeatherEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -250,7 +250,7 @@ public class WeatherProvider extends ContentProvider {
             // "location"
             case LOCATION: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        WeatherContract.LocationEntry.TABLE_NAME,
+                        MovieContract.LocationEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -280,25 +280,25 @@ public class WeatherProvider extends ContentProvider {
         switch (match) {
             case WEATHER: {
                 normalizeDate(values);
-                long _id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, values);
+                long _id = db.insert(MovieContract.WeatherEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
-                    returnUri = WeatherContract.WeatherEntry.buildWeatherUri(_id);
+                    returnUri = MovieContract.WeatherEntry.buildWeatherUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
             case LOCATION: {
-                long _id = db.insert(WeatherContract.LocationEntry.TABLE_NAME, null, values);
+                long _id = db.insert(MovieContract.LocationEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
-                    returnUri = WeatherContract.LocationEntry.buildLocationUri(_id);
+                    returnUri = MovieContract.LocationEntry.buildLocationUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
             case MOVIE: {
-                long _id = db.insert(WeatherContract.MovieEntry.TABLE_NAME, null, values);
+                long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
-                    returnUri = WeatherContract.MovieEntry.buildMovieUri(_id);
+                    returnUri = MovieContract.MovieEntry.buildMovieUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -320,15 +320,15 @@ public class WeatherProvider extends ContentProvider {
         switch (match) {
             case WEATHER:
                 rowsDeleted = db.delete(
-                        WeatherContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
+                        MovieContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case LOCATION:
                 rowsDeleted = db.delete(
-                        WeatherContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
+                        MovieContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case MOVIE:
                 rowsDeleted = db.delete(
-                        WeatherContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+                        MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -342,9 +342,9 @@ public class WeatherProvider extends ContentProvider {
 
     private void normalizeDate(ContentValues values) {
         // normalize the date value
-        if (values.containsKey(WeatherContract.WeatherEntry.COLUMN_DATE)) {
-            long dateValue = values.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE);
-            values.put(WeatherContract.WeatherEntry.COLUMN_DATE, WeatherContract.normalizeDate(dateValue));
+        if (values.containsKey(MovieContract.WeatherEntry.COLUMN_DATE)) {
+            long dateValue = values.getAsLong(MovieContract.WeatherEntry.COLUMN_DATE);
+            values.put(MovieContract.WeatherEntry.COLUMN_DATE, MovieContract.normalizeDate(dateValue));
         }
     }
 
@@ -358,15 +358,15 @@ public class WeatherProvider extends ContentProvider {
         switch (match) {
             case WEATHER:
                 normalizeDate(values);
-                rowsUpdated = db.update(WeatherContract.WeatherEntry.TABLE_NAME, values, selection,
+                rowsUpdated = db.update(MovieContract.WeatherEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
             case LOCATION:
-                rowsUpdated = db.update(WeatherContract.LocationEntry.TABLE_NAME, values, selection,
+                rowsUpdated = db.update(MovieContract.LocationEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
             case MOVIE:
-                rowsUpdated = db.update(WeatherContract.MovieEntry.TABLE_NAME, values, selection,
+                rowsUpdated = db.update(MovieContract.MovieEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
             default:
@@ -389,7 +389,7 @@ public class WeatherProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         normalizeDate(value);
-                        long _id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, value);
+                        long _id = db.insert(MovieContract.WeatherEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }
@@ -406,7 +406,7 @@ public class WeatherProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         normalizeDate(value);
-                        long _id = db.insert(WeatherContract.MovieEntry.TABLE_NAME, null, value);
+                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }

@@ -22,9 +22,9 @@ import android.provider.BaseColumns;
 import android.text.format.Time;
 
 /**
- * Defines table and column names for the weather database.
+ * Defines table and column names for the movies database.
  */
-public class WeatherContract {
+public class MovieContract {
 
     // The "Content authority" is a name for the entire content provider, similar to the
     // relationship between a domain name and its website.  A convenient string to use for the
@@ -37,7 +37,7 @@ public class WeatherContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     // Possible paths (appended to base content URI for possible URI's)
-    // For instance, content://com.example.android.popularmovies.app/weather/ is a valid path for
+    // For instance, content://com.example.android.popularmovies.app/movies/ is a valid path for
     // looking at weather data. content://com.example.android.popularmovies.app/givemeroot/ will fail,
     // as the ContentProvider hasn't been given any information on what to do with "givemeroot".
     // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
@@ -201,36 +201,8 @@ public class WeatherContract {
             return CONTENT_URI.buildUpon().build();
         }
 
-        /*
-            Student: This is the buildWeatherLocation function you filled in.
-         */
-        public static Uri buildWeatherLocation(String locationSetting) {
-            return CONTENT_URI.buildUpon().appendPath(locationSetting).build();
-        }
-
         public static Uri buildWeatherLocationWithStartDate() {
             return CONTENT_URI.buildUpon().build();
-        }
-
-        public static Uri buildWeatherLocationWithDate(String locationSetting, long date) {
-            return CONTENT_URI.buildUpon().appendPath(locationSetting)
-                    .appendPath(Long.toString(normalizeDate(date))).build();
-        }
-
-        public static String getLocationSettingFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-
-        public static long getDateFromUri(Uri uri) {
-            return Long.parseLong(uri.getPathSegments().get(2));
-        }
-
-        public static long getStartDateFromUri(Uri uri) {
-            String dateString = uri.getQueryParameter(COLUMN_DATE);
-            if (null != dateString && dateString.length() > 0)
-                return Long.parseLong(dateString);
-            else
-                return 0;
         }
 
         public static Uri buildMovieWithId(long movieId) {
