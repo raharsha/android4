@@ -234,7 +234,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         // dates after or including today.
 
         // Sort order:  Ascending, by date.
-        String sortOrder = MovieContract.WeatherEntry.COLUMN_DATE + " ASC";
+        String sortOrder = MovieContract.MovieEntry.COLUMN_DATE + " ASC";
 
         String locationSetting = Utility.getPreferredLocation(getActivity());
         Uri weatherForLocationUri = MovieContract.MovieEntry.buildWeatherLocationWithStartDate();

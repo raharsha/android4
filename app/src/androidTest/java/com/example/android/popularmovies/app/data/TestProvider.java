@@ -27,7 +27,7 @@ import android.os.Build;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
-import com.example.android.popularmovies.app.data.MovieContract.WeatherEntry;
+//import com.example.android.popularmovies.app.data.MovieContract.WeatherEntry;
 
 /*
     Note: This is not a complete set of tests of the Sunshine ContentProvider, but it does test
@@ -50,26 +50,26 @@ public class TestProvider extends AndroidTestCase {
        the delete functionality in the ContentProvider.
      */
     public void deleteAllRecordsFromProvider() {
-        mContext.getContentResolver().delete(
-                WeatherEntry.CONTENT_URI,
-                null,
-                null
-        );
+//        mContext.getContentResolver().delete(
+//                WeatherEntry.CONTENT_URI,
+//                null,
+//                null
+//        );
 //        mContext.getContentResolver().delete(
 //                LocationEntry.CONTENT_URI,
 //                null,
 //                null
 //        );
 
-        Cursor cursor = mContext.getContentResolver().query(
-                WeatherEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                null
-        );
-        assertEquals("Error: Records not deleted from Weather table during delete", 0, cursor.getCount());
-        cursor.close();
+//        Cursor cursor = mContext.getContentResolver().query(
+//                WeatherEntry.CONTENT_URI,
+//                null,
+//                null,
+//                null,
+//                null
+//        );
+//        assertEquals("Error: Records not deleted from Weather table during delete", 0, cursor.getCount());
+//        cursor.close();
 
 //        cursor = mContext.getContentResolver().query(
 //                LocationEntry.CONTENT_URI,
@@ -78,8 +78,8 @@ public class TestProvider extends AndroidTestCase {
 //                null,
 //                null
 //        );
-        assertEquals("Error: Records not deleted from Location table during delete", 0, cursor.getCount());
-        cursor.close();
+//        assertEquals("Error: Records not deleted from Location table during delete", 0, cursor.getCount());
+//        cursor.close();
     }
 
     /*
@@ -133,27 +133,27 @@ public class TestProvider extends AndroidTestCase {
          */
     public void testGetType() {
         // content://com.example.android.popularmovies.app/weather/
-        String type = mContext.getContentResolver().getType(WeatherEntry.CONTENT_URI);
-        // vnd.android.cursor.dir/com.example.android.popularmovies.app/weather
-        assertEquals("Error: the WeatherEntry CONTENT_URI should return WeatherEntry.CONTENT_TYPE",
-                WeatherEntry.CONTENT_TYPE, type);
-
-        String testLocation = "94074";
-        // content://com.example.android.popularmovies.app/weather/94074
-        type = mContext.getContentResolver().getType(
-                WeatherEntry.buildWeatherLocation(testLocation));
-        // vnd.android.cursor.dir/com.example.android.popularmovies.app/weather
-        assertEquals("Error: the WeatherEntry CONTENT_URI with location should return WeatherEntry.CONTENT_TYPE",
-                WeatherEntry.CONTENT_TYPE, type);
-
-        long testDate = 1419120000L; // December 21st, 2014
-        // content://com.example.android.popularmovies.app/weather/94074/20140612
-        type = mContext.getContentResolver().getType(
-                WeatherEntry.buildWeatherLocationWithDate(testLocation, testDate));
-        // vnd.android.cursor.item/com.example.android.popularmovies.app/weather/1419120000
-        assertEquals("Error: the WeatherEntry CONTENT_URI with location and date should return WeatherEntry.CONTENT_ITEM_TYPE",
-                WeatherEntry.CONTENT_ITEM_TYPE, type);
-
+//        String type = mContext.getContentResolver().getType(WeatherEntry.CONTENT_URI);
+//        // vnd.android.cursor.dir/com.example.android.popularmovies.app/weather
+//        assertEquals("Error: the WeatherEntry CONTENT_URI should return WeatherEntry.CONTENT_TYPE",
+//                WeatherEntry.CONTENT_TYPE, type);
+//
+//        String testLocation = "94074";
+//        // content://com.example.android.popularmovies.app/weather/94074
+//        type = mContext.getContentResolver().getType(
+//                WeatherEntry.buildWeatherLocation(testLocation));
+//        // vnd.android.cursor.dir/com.example.android.popularmovies.app/weather
+//        assertEquals("Error: the WeatherEntry CONTENT_URI with location should return WeatherEntry.CONTENT_TYPE",
+//                WeatherEntry.CONTENT_TYPE, type);
+//
+//        long testDate = 1419120000L; // December 21st, 2014
+//        // content://com.example.android.popularmovies.app/weather/94074/20140612
+//        type = mContext.getContentResolver().getType(
+//                WeatherEntry.buildWeatherLocationWithDate(testLocation, testDate));
+//        // vnd.android.cursor.item/com.example.android.popularmovies.app/weather/1419120000
+//        assertEquals("Error: the WeatherEntry CONTENT_URI with location and date should return WeatherEntry.CONTENT_ITEM_TYPE",
+//                WeatherEntry.CONTENT_ITEM_TYPE, type);
+//
         // content://com.example.android.popularmovies.app/location/
 //        type = mContext.getContentResolver().getType(LocationEntry.CONTENT_URI);
 //        // vnd.android.cursor.dir/com.example.android.popularmovies.app/location
@@ -178,22 +178,22 @@ public class TestProvider extends AndroidTestCase {
         // Fantastic.  Now that we have a location, add some weather!
         ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
 
-        long weatherRowId = db.insert(WeatherEntry.TABLE_NAME, null, weatherValues);
-        assertTrue("Unable to Insert WeatherEntry into the Database", weatherRowId != -1);
-
+//        long weatherRowId = db.insert(WeatherEntry.TABLE_NAME, null, weatherValues);
+//        assertTrue("Unable to Insert WeatherEntry into the Database", weatherRowId != -1);
+//
         db.close();
 
-        // Test the basic content provider query
-        Cursor weatherCursor = mContext.getContentResolver().query(
-                WeatherEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                null
-        );
+//        // Test the basic content provider query
+//        Cursor weatherCursor = mContext.getContentResolver().query(
+//                WeatherEntry.CONTENT_URI,
+//                null,
+//                null,
+//                null,
+//                null
+//        );
 
         // Make sure we get the correct cursor out of the database
-        TestUtilities.validateCursor("testBasicWeatherQuery", weatherCursor, weatherValues);
+//        TestUtilities.validateCursor("testBasicWeatherQuery", weatherCursor, weatherValues);
     }
 
     /*
@@ -429,16 +429,16 @@ public class TestProvider extends AndroidTestCase {
 
         for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++, currentTestDate+= millisecondsInADay ) {
             ContentValues weatherValues = new ContentValues();
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_LOC_KEY, locationRowId);
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_DATE, currentTestDate);
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_DEGREES, 1.1);
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_HUMIDITY, 1.2 + 0.01 * (float) i);
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_PRESSURE, 1.3 - 0.01 * (float) i);
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_MAX_TEMP, 75 + i);
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_MIN_TEMP, 65 - i);
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_SHORT_DESC, "Asteroids");
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_WIND_SPEED, 5.5 + 0.2 * (float) i);
-            weatherValues.put(MovieContract.WeatherEntry.COLUMN_WEATHER_ID, 321);
+//            weatherValues.put(MovieContract.MovieEntry.COLUMN_LOC_KEY, locationRowId);
+//            weatherValues.put(MovieContract.WeatherEntry.COLUMN_DATE, currentTestDate);
+//            weatherValues.put(MovieContract.WeatherEntry.COLUMN_DEGREES, 1.1);
+//            weatherValues.put(MovieContract.WeatherEntry.COLUMN_HUMIDITY, 1.2 + 0.01 * (float) i);
+//            weatherValues.put(MovieContract.WeatherEntry.COLUMN_PRESSURE, 1.3 - 0.01 * (float) i);
+//            weatherValues.put(MovieContract.WeatherEntry.COLUMN_MAX_TEMP, 75 + i);
+//            weatherValues.put(MovieContract.WeatherEntry.COLUMN_MIN_TEMP, 65 - i);
+//            weatherValues.put(MovieContract.WeatherEntry.COLUMN_SHORT_DESC, "Asteroids");
+//            weatherValues.put(MovieContract.WeatherEntry.COLUMN_WIND_SPEED, 5.5 + 0.2 * (float) i);
+//            weatherValues.put(MovieContract.WeatherEntry.COLUMN_WEATHER_ID, 321);
             returnContentValues[i] = weatherValues;
         }
         return returnContentValues;

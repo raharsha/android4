@@ -140,10 +140,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         // replace the uri, since the location has changed
         Uri uri = mUri;
         if (null != uri) {
-            long date = MovieContract.WeatherEntry.getDateFromUri(uri);
-            Uri updatedUri = MovieContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
-            mUri = updatedUri;
-            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+//            long date = MovieContract.WeatherEntry.getDateFromUri(uri);
+//            Uri updatedUri = MovieContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+//            mUri = updatedUri;
+//            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
         }
     }
 

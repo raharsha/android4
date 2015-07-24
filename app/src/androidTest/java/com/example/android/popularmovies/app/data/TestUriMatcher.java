@@ -31,9 +31,9 @@ public class TestUriMatcher extends AndroidTestCase {
     private static final long TEST_LOCATION_ID = 10L;
 
     // content://com.example.android.popularmovies.app/weather"
-    private static final Uri TEST_WEATHER_DIR = MovieContract.WeatherEntry.CONTENT_URI;
-    private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = MovieContract.WeatherEntry.buildWeatherLocation(LOCATION_QUERY);
-    private static final Uri TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR = MovieContract.WeatherEntry.buildWeatherLocationWithDate(LOCATION_QUERY, TEST_DATE);
+    private static final Uri TEST_WEATHER_DIR = MovieContract.MovieEntry.CONTENT_URI;
+//    private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = MovieContract.MovieEntry.buildWeatherLocation(LOCATION_QUERY);
+//    private static final Uri TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR = MovieContract.MovieEntry.buildWeatherLocationWithDate(LOCATION_QUERY, TEST_DATE);
     // content://com.example.android.popularmovies.app/location"
 //    private static final Uri TEST_LOCATION_DIR = MovieContract.LocationEntry.CONTENT_URI;
 
@@ -47,10 +47,10 @@ public class TestUriMatcher extends AndroidTestCase {
 
         assertEquals("Error: The WEATHER URI was matched incorrectly.",
                 testMatcher.match(TEST_WEATHER_DIR), MovieProvider.WEATHER);
-        assertEquals("Error: The WEATHER WITH LOCATION URI was matched incorrectly.",
-                testMatcher.match(TEST_WEATHER_WITH_LOCATION_DIR), MovieProvider.WEATHER_WITH_LOCATION);
-        assertEquals("Error: The WEATHER WITH LOCATION AND DATE URI was matched incorrectly.",
-                testMatcher.match(TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR), MovieProvider.WEATHER_WITH_LOCATION_AND_DATE);
+//        assertEquals("Error: The WEATHER WITH LOCATION URI was matched incorrectly.",
+//                testMatcher.match(TEST_WEATHER_WITH_LOCATION_DIR), MovieProvider.WEATHER_WITH_LOCATION);
+//        assertEquals("Error: The WEATHER WITH LOCATION AND DATE URI was matched incorrectly.",
+//                testMatcher.match(TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR), MovieProvider.WEATHER_WITH_LOCATION_AND_DATE);
 //        assertEquals("Error: The LOCATION URI was matched incorrectly.",
 //                testMatcher.match(TEST_LOCATION_DIR), MovieProvider.LOCATION);
     }

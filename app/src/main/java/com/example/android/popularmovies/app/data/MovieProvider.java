@@ -135,16 +135,16 @@ public class MovieProvider extends ContentProvider {
 
         switch (match) {
             // Student: Uncomment and fill out these two cases
-            case WEATHER_WITH_LOCATION_AND_DATE:
-                return MovieContract.WeatherEntry.CONTENT_ITEM_TYPE;
-            case WEATHER_WITH_LOCATION:
-                return MovieContract.WeatherEntry.CONTENT_TYPE;
+//            case WEATHER_WITH_LOCATION_AND_DATE:
+//                return MovieContract.WeatherEntry.CONTENT_ITEM_TYPE;
+//            case WEATHER_WITH_LOCATION:
+//                return MovieContract.WeatherEntry.CONTENT_TYPE;
             case MOVIE:
                 return MovieContract.MovieEntry.CONTENT_TYPE;
             case MOVIE_WITH_ID:
                 return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
-            case WEATHER:
-                return MovieContract.WeatherEntry.CONTENT_TYPE;
+//            case WEATHER:
+//                return MovieContract.WeatherEntry.CONTENT_TYPE;
 //            case LOCATION:
 //                return MovieContract.LocationEntry.CONTENT_TYPE;
             default:
@@ -233,10 +233,10 @@ public class MovieProvider extends ContentProvider {
 
     private void normalizeDate(ContentValues values) {
         // normalize the date value
-        if (values.containsKey(MovieContract.WeatherEntry.COLUMN_DATE)) {
-            long dateValue = values.getAsLong(MovieContract.WeatherEntry.COLUMN_DATE);
-            values.put(MovieContract.WeatherEntry.COLUMN_DATE, MovieContract.normalizeDate(dateValue));
-        }
+//        if (values.containsKey(MovieContract.WeatherEntry.COLUMN_DATE)) {
+//            long dateValue = values.getAsLong(MovieContract.WeatherEntry.COLUMN_DATE);
+//            values.put(MovieContract.WeatherEntry.COLUMN_DATE, MovieContract.normalizeDate(dateValue));
+//        }
     }
 
     @Override

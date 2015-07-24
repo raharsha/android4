@@ -54,7 +54,7 @@ public class TestDb extends AndroidTestCase {
         // Android metadata (db version information)
         final HashSet<String> tableNameHashSet = new HashSet<String>();
 //        tableNameHashSet.add(MovieContract.LocationEntry.TABLE_NAME);
-        tableNameHashSet.add(MovieContract.WeatherEntry.TABLE_NAME);
+        tableNameHashSet.add(MovieContract.MovieEntry.TABLE_NAME);
 
         mContext.deleteDatabase(MovieDbHelper.DATABASE_NAME);
         SQLiteDatabase db = new MovieDbHelper(
@@ -145,13 +145,13 @@ public class TestDb extends AndroidTestCase {
         ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
 
         // Third Step (Weather): Insert ContentValues into database and get a row ID back
-        long weatherRowId = db.insert(MovieContract.WeatherEntry.TABLE_NAME, null, weatherValues);
+        long weatherRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, weatherValues);
         assertTrue(weatherRowId != -1);
 
         // Fourth Step: Query the database and receive a Cursor back
         // A cursor is your primary interface to the query results.
         Cursor weatherCursor = db.query(
-                MovieContract.WeatherEntry.TABLE_NAME,  // Table to Query
+                MovieContract.MovieEntry.TABLE_NAME,  // Table to Query
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
