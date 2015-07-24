@@ -52,36 +52,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int FORECAST_LOADER = 0;
     // For the forecast view we're showing only a small subset of the stored data.
     // Specify the columns we need.
-    private static final String[] FORECAST_COLUMNS = {
-            // In this case the id needs to be fully qualified with a table name, since
-            // the content provider joins the location & weather tables in the background
-            // (both have an _id column)
-            // On the one hand, that's annoying.  On the other, you can search the weather table
-            // using the location set by the user, which is only in the Location table.
-            // So the convenience is worth it.
-            MovieContract.WeatherEntry.TABLE_NAME + "." + MovieContract.WeatherEntry._ID,
-            MovieContract.WeatherEntry.COLUMN_DATE,
-            MovieContract.WeatherEntry.COLUMN_SHORT_DESC,
-            MovieContract.WeatherEntry.COLUMN_MAX_TEMP,
-            MovieContract.WeatherEntry.COLUMN_MIN_TEMP,
-            MovieContract.LocationEntry.COLUMN_LOCATION_SETTING,
-            MovieContract.WeatherEntry.COLUMN_WEATHER_ID,
-            MovieContract.LocationEntry.COLUMN_COORD_LAT,
-            MovieContract.LocationEntry.COLUMN_COORD_LONG
-    };
-
-    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
-    // must change.
-    static final int COL_WEATHER_ID = 0;
-    static final int COL_WEATHER_DATE = 1;
-    static final int COL_WEATHER_DESC = 2;
-    static final int COL_WEATHER_MAX_TEMP = 3;
-    static final int COL_WEATHER_MIN_TEMP = 4;
-    static final int COL_LOCATION_SETTING = 5;
-    static final int COL_WEATHER_CONDITION_ID = 6;
-    static final int COL_COORD_LAT = 7;
-    static final int COL_COORD_LONG = 8;
-
     private static final String[] MOVIE_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
             // the content provider joins the location & weather tables in the background
@@ -227,17 +197,17 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             Cursor c = mMoviesAdapter.getCursor();
             if ( null != c ) {
                 c.moveToPosition(0);
-                String posLat = c.getString(COL_COORD_LAT);
-                String posLong = c.getString(COL_COORD_LONG);
-                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
+//                String posLat = c.getString(COL_COORD_LAT);
+//                String posLong = c.getString(COL_COORD_LONG);
+//                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(geoLocation);
+//                intent.setData(geoLocation);
 
                 if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(intent);
                 } else {
-                    Log.d(LOG_TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
+//                    Log.d(LOG_TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
                 }
             }
 

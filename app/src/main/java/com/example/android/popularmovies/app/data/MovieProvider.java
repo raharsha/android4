@@ -37,70 +37,37 @@ public class MovieProvider extends ContentProvider {
     static final int WEATHER_WITH_LOCATION_AND_DATE = 102;
     static final int LOCATION = 300;
 
-    private static final SQLiteQueryBuilder sWeatherByLocationSettingQueryBuilder;
+//    private static final SQLiteQueryBuilder sWeatherByLocationSettingQueryBuilder;
     private static final SQLiteQueryBuilder sMovieByIdQueryBuilder;
 
     static{
-        sWeatherByLocationSettingQueryBuilder = new SQLiteQueryBuilder();
+//        sWeatherByLocationSettingQueryBuilder = new SQLiteQueryBuilder();
         sMovieByIdQueryBuilder = new SQLiteQueryBuilder();
 
         //This is an inner join which looks like
         //weather INNER JOIN location ON weather.location_id = location._id
-        sWeatherByLocationSettingQueryBuilder.setTables(
-                MovieContract.WeatherEntry.TABLE_NAME + " INNER JOIN " +
-                        MovieContract.LocationEntry.TABLE_NAME +
-                        " ON " + MovieContract.WeatherEntry.TABLE_NAME +
-                        "." + MovieContract.WeatherEntry.COLUMN_LOC_KEY +
-                        " = " + MovieContract.LocationEntry.TABLE_NAME +
-                        "." + MovieContract.LocationEntry._ID);
+//        sWeatherByLocationSettingQueryBuilder.setTables(
+//                MovieContract.WeatherEntry.TABLE_NAME + " INNER JOIN " +
+//                        MovieContract.LocationEntry.TABLE_NAME +
+//                        " ON " + MovieContract.WeatherEntry.TABLE_NAME +
+//                        "." + MovieContract.WeatherEntry.COLUMN_LOC_KEY +
+//                        " = " + MovieContract.LocationEntry.TABLE_NAME +
+//                        "." + MovieContract.LocationEntry._ID);
         sMovieByIdQueryBuilder.setTables(MovieContract.MovieEntry.TABLE_NAME );
     }
 
-    //location.location_setting = ?
-    private static final String sLocationSettingSelection =
-            MovieContract.LocationEntry.TABLE_NAME+
-                    "." + MovieContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? ";
 
     private static final String sMovieSelection =
             MovieContract.MovieEntry.TABLE_NAME+
                     "." + MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? ";
 
-    //location.location_setting = ? AND date >= ?
-    private static final String sLocationSettingWithStartDateSelection =
-            MovieContract.LocationEntry.TABLE_NAME+
-                    "." + MovieContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
-                    MovieContract.WeatherEntry.COLUMN_DATE + " >= ? ";
 
     //location.location_setting = ? AND date = ?
-    private static final String sLocationSettingAndDaySelection =
-            MovieContract.LocationEntry.TABLE_NAME +
-                    "." + MovieContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
-                    MovieContract.WeatherEntry.COLUMN_DATE + " = ? ";
+//    private static final String sLocationSettingAndDaySelection =
+//            MovieContract.LocationEntry.TABLE_NAME +
+//                    "." + MovieContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
+//                    MovieContract.WeatherEntry.COLUMN_DATE + " = ? ";
 
-    private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
-        String locationSetting = MovieContract.WeatherEntry.getLocationSettingFromUri(uri);
-        long startDate = MovieContract.WeatherEntry.getStartDateFromUri(uri);
-
-        String[] selectionArgs;
-        String selection;
-
-        if (startDate == 0) {
-            selection = sLocationSettingSelection;
-            selectionArgs = new String[]{locationSetting};
-        } else {
-            selectionArgs = new String[]{locationSetting, Long.toString(startDate)};
-            selection = sLocationSettingWithStartDateSelection;
-        }
-
-        return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                sortOrder
-        );
-    }
 
     private Cursor getMovieById(Uri uri, String[] projection, String sortOrder) {
         String movieId = MovieContract.MovieEntry.getMovieIdFromUri(uri);
@@ -112,21 +79,6 @@ public class MovieProvider extends ContentProvider {
                 projection,
                 selection,
                 selectionArgs,
-                null,
-                null,
-                sortOrder
-        );
-    }
-
-    private Cursor getWeatherByLocationSettingAndDate(
-            Uri uri, String[] projection, String sortOrder) {
-        String locationSetting = MovieContract.WeatherEntry.getLocationSettingFromUri(uri);
-        long date = MovieContract.WeatherEntry.getDateFromUri(uri);
-
-        return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                projection,
-                sLocationSettingAndDaySelection,
-                new String[]{locationSetting, Long.toString(date)},
                 null,
                 null,
                 sortOrder
@@ -193,8 +145,8 @@ public class MovieProvider extends ContentProvider {
                 return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
             case WEATHER:
                 return MovieContract.WeatherEntry.CONTENT_TYPE;
-            case LOCATION:
-                return MovieContract.LocationEntry.CONTENT_TYPE;
+//            case LOCATION:
+//                return MovieContract.LocationEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -208,11 +160,6 @@ public class MovieProvider extends ContentProvider {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             // "weather/*/*"
-            case WEATHER_WITH_LOCATION_AND_DATE:
-            {
-                retCursor = getWeatherByLocationSettingAndDate(uri, projection, sortOrder);
-                break;
-            }
             case MOVIE: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.MovieEntry.TABLE_NAME,
@@ -227,37 +174,6 @@ public class MovieProvider extends ContentProvider {
             }
             case MOVIE_WITH_ID: {
                 retCursor = getMovieById(uri, projection, sortOrder);
-                break;
-            }
-            // "weather/*"
-            case WEATHER_WITH_LOCATION: {
-                retCursor = getWeatherByLocationSetting(uri, projection, sortOrder);
-                break;
-            }
-            // "weather"
-            case WEATHER: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        MovieContract.WeatherEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
-                break;
-            }
-            // "location"
-            case LOCATION: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        MovieContract.LocationEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
                 break;
             }
 
@@ -278,23 +194,6 @@ public class MovieProvider extends ContentProvider {
         Uri returnUri;
 
         switch (match) {
-            case WEATHER: {
-                normalizeDate(values);
-                long _id = db.insert(MovieContract.WeatherEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
-                    returnUri = MovieContract.WeatherEntry.buildWeatherUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            }
-            case LOCATION: {
-                long _id = db.insert(MovieContract.LocationEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
-                    returnUri = MovieContract.LocationEntry.buildLocationUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            }
             case MOVIE: {
                 long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
@@ -318,14 +217,6 @@ public class MovieProvider extends ContentProvider {
         // this makes delete all rows return the number of rows deleted
         if ( null == selection ) selection = "1";
         switch (match) {
-            case WEATHER:
-                rowsDeleted = db.delete(
-                        MovieContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
-                break;
-            case LOCATION:
-                rowsDeleted = db.delete(
-                        MovieContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
-                break;
             case MOVIE:
                 rowsDeleted = db.delete(
                         MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
@@ -356,15 +247,6 @@ public class MovieProvider extends ContentProvider {
         int rowsUpdated;
 
         switch (match) {
-            case WEATHER:
-                normalizeDate(values);
-                rowsUpdated = db.update(MovieContract.WeatherEntry.TABLE_NAME, values, selection,
-                        selectionArgs);
-                break;
-            case LOCATION:
-                rowsUpdated = db.update(MovieContract.LocationEntry.TABLE_NAME, values, selection,
-                        selectionArgs);
-                break;
             case MOVIE:
                 rowsUpdated = db.update(MovieContract.MovieEntry.TABLE_NAME, values, selection,
                         selectionArgs);
@@ -383,26 +265,9 @@ public class MovieProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case WEATHER:
-                db.beginTransaction();
-                int returnCount = 0;
-                try {
-                    for (ContentValues value : values) {
-                        normalizeDate(value);
-                        long _id = db.insert(MovieContract.WeatherEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
             case MOVIE:
                 db.beginTransaction();
-                returnCount = 0;
+                int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
                         normalizeDate(value);

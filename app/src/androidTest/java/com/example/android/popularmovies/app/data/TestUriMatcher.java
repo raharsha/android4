@@ -35,7 +35,7 @@ public class TestUriMatcher extends AndroidTestCase {
     private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = MovieContract.WeatherEntry.buildWeatherLocation(LOCATION_QUERY);
     private static final Uri TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR = MovieContract.WeatherEntry.buildWeatherLocationWithDate(LOCATION_QUERY, TEST_DATE);
     // content://com.example.android.popularmovies.app/location"
-    private static final Uri TEST_LOCATION_DIR = MovieContract.LocationEntry.CONTENT_URI;
+//    private static final Uri TEST_LOCATION_DIR = MovieContract.LocationEntry.CONTENT_URI;
 
     /*
         Students: This function tests that your UriMatcher returns the correct integer value
@@ -51,7 +51,7 @@ public class TestUriMatcher extends AndroidTestCase {
                 testMatcher.match(TEST_WEATHER_WITH_LOCATION_DIR), MovieProvider.WEATHER_WITH_LOCATION);
         assertEquals("Error: The WEATHER WITH LOCATION AND DATE URI was matched incorrectly.",
                 testMatcher.match(TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR), MovieProvider.WEATHER_WITH_LOCATION_AND_DATE);
-        assertEquals("Error: The LOCATION URI was matched incorrectly.",
-                testMatcher.match(TEST_LOCATION_DIR), MovieProvider.LOCATION);
+//        assertEquals("Error: The LOCATION URI was matched incorrectly.",
+//                testMatcher.match(TEST_LOCATION_DIR), MovieProvider.LOCATION);
     }
 }

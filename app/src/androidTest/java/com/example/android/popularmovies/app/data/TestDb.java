@@ -53,7 +53,7 @@ public class TestDb extends AndroidTestCase {
         // Note that there will be another table in the DB that stores the
         // Android metadata (db version information)
         final HashSet<String> tableNameHashSet = new HashSet<String>();
-        tableNameHashSet.add(MovieContract.LocationEntry.TABLE_NAME);
+//        tableNameHashSet.add(MovieContract.LocationEntry.TABLE_NAME);
         tableNameHashSet.add(MovieContract.WeatherEntry.TABLE_NAME);
 
         mContext.deleteDatabase(MovieDbHelper.DATABASE_NAME);
@@ -78,19 +78,19 @@ public class TestDb extends AndroidTestCase {
                 tableNameHashSet.isEmpty());
 
         // now, do our tables contain the correct columns?
-        c = db.rawQuery("PRAGMA table_info(" + MovieContract.LocationEntry.TABLE_NAME + ")",
-                null);
-
-        assertTrue("Error: This means that we were unable to query the database for table information.",
-                c.moveToFirst());
+//        c = db.rawQuery("PRAGMA table_info(" + MovieContract.LocationEntry.TABLE_NAME + ")",
+//                null);
+//
+//        assertTrue("Error: This means that we were unable to query the database for table information.",
+//                c.moveToFirst());
 
         // Build a HashSet of all of the column names we want to look for
         final HashSet<String> locationColumnHashSet = new HashSet<String>();
-        locationColumnHashSet.add(MovieContract.LocationEntry._ID);
-        locationColumnHashSet.add(MovieContract.LocationEntry.COLUMN_CITY_NAME);
-        locationColumnHashSet.add(MovieContract.LocationEntry.COLUMN_COORD_LAT);
-        locationColumnHashSet.add(MovieContract.LocationEntry.COLUMN_COORD_LONG);
-        locationColumnHashSet.add(MovieContract.LocationEntry.COLUMN_LOCATION_SETTING);
+//        locationColumnHashSet.add(MovieContract.LocationEntry._ID);
+//        locationColumnHashSet.add(MovieContract.LocationEntry.COLUMN_CITY_NAME);
+//        locationColumnHashSet.add(MovieContract.LocationEntry.COLUMN_COORD_LAT);
+//        locationColumnHashSet.add(MovieContract.LocationEntry.COLUMN_COORD_LONG);
+//        locationColumnHashSet.add(MovieContract.LocationEntry.COLUMN_LOCATION_SETTING);
 
         int columnNameIndex = c.getColumnIndex("name");
         do {
@@ -195,43 +195,44 @@ public class TestDb extends AndroidTestCase {
 
         // Third Step: Insert ContentValues into database and get a row ID back
         long locationRowId;
-        locationRowId = db.insert(MovieContract.LocationEntry.TABLE_NAME, null, testValues);
+//        locationRowId = db.insert(MovieContract.LocationEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
-        assertTrue(locationRowId != -1);
+//        assertTrue(locationRowId != -1);
 
         // Data's inserted.  IN THEORY.  Now pull some out to stare at it and verify it made
         // the round trip.
 
         // Fourth Step: Query the database and receive a Cursor back
         // A cursor is your primary interface to the query results.
-        Cursor cursor = db.query(
-                MovieContract.LocationEntry.TABLE_NAME,  // Table to Query
-                null, // all columns
-                null, // Columns for the "where" clause
-                null, // Values for the "where" clause
-                null, // columns to group by
-                null, // columns to filter by row groups
-                null // sort order
-        );
+//        Cursor cursor = db.query(
+//                MovieContract.LocationEntry.TABLE_NAME,  // Table to Query
+//                null, // all columns
+//                null, // Columns for the "where" clause
+//                null, // Values for the "where" clause
+//                null, // columns to group by
+//                null, // columns to filter by row groups
+//                null // sort order
+//        );
 
         // Move the cursor to a valid database row and check to see if we got any records back
         // from the query
-        assertTrue( "Error: No Records returned from location query", cursor.moveToFirst() );
+//        assertTrue( "Error: No Records returned from location query", cursor.moveToFirst() );
 
         // Fifth Step: Validate data in resulting Cursor with the original ContentValues
         // (you can use the validateCurrentRecord function in TestUtilities to validate the
         // query if you like)
-        TestUtilities.validateCurrentRecord("Error: Location Query Validation Failed",
-                cursor, testValues);
+//        TestUtilities.validateCurrentRecord("Error: Location Query Validation Failed",
+//                cursor, testValues);
 
         // Move the cursor to demonstrate that there is only one record in the database
-        assertFalse( "Error: More than one record returned from location query",
-                cursor.moveToNext() );
+//        assertFalse( "Error: More than one record returned from location query",
+//                cursor.moveToNext() );
 
         // Sixth Step: Close Cursor and Database
-        cursor.close();
+//        cursor.close();
         db.close();
-        return locationRowId;
+//        return locationRowId;
+        return 0L;
     }
 }
