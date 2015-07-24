@@ -60,7 +60,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MovieContract.MovieEntry.COLUMN_POSTER_PATH,
             MovieContract.MovieEntry.COLUMN_OVERVIEW,
             MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
-            MovieContract.MovieEntry.COLUMN_RELEASE_DATE
+            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+            MovieContract.MovieEntry.COLUMN_RUNTIME,
+            MovieContract.MovieEntry.COLUMN_VIDEOS
     };
 
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
@@ -72,11 +74,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_MOVIE_DETAIL_OVERVIEW = 4;
     public static final int COL_MOVIE_DETAIL_VOTE_AVERAGE = 5;
     public static final int COL_MOVIE_DETAIL_RELEASE_DATE = 6;
+    public static final int COL_MOVIE_DETAIL_RUNTIME = 7;
+    public static final int COL_MOVIE_DETAIL_VIDEOS = 8;
 
     private ImageView mThumbnail;
     private TextView mYear;
     private TextView mTitle;
     private TextView mRating;
+    private TextView mRuntime;
     private TextView mOverview;
     private TextView mLowTempView;
     private TextView mHumidityView;
@@ -101,6 +106,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mTitle = (TextView) rootView.findViewById(R.id.textView);
         mYear = (TextView) rootView.findViewById(R.id.textView2);
         mRating = (TextView) rootView.findViewById(R.id.tvRating);
+        mRuntime = (TextView) rootView.findViewById(R.id.tvLength);
         mOverview = (TextView) rootView.findViewById(R.id.tvOverview);
         return rootView;
     }
@@ -187,8 +193,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             mTitle.setText(title);
 //
 //            // Read rating from cursor and update view
-            String rating = data.getString(COL_MOVIE_DETAIL_VOTE_AVERAGE);
+            String rating = data.getString(COL_MOVIE_DETAIL_VOTE_AVERAGE) + "/10";
+            String length = data.getString(COL_MOVIE_DETAIL_RUNTIME) + "min";
             mRating.setText(rating);
+            mRuntime.setText(length);
 
             String overview = data.getString(COL_MOVIE_DETAIL_OVERVIEW);
             mOverview.setText(overview);

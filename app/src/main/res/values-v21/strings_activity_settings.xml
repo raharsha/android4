@@ -1,0 +1,20 @@
+<resources>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_sort_by">Sort By</string>
+    <string-array name="pref_example_list_titles">
+        <item>Popularity</item>
+        <item>Ratings</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>popularity.desc</item>
+        <item>vote_average.desc</item>
+    </string-array>
+
+
+</resources>

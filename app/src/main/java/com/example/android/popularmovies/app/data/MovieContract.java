@@ -79,6 +79,10 @@ public class MovieContract {
         public static final String COLUMN_RELEASE_DATE = "release_date";
 
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
+        public static final String COLUMN_IS_CURRENT = "is_current";
+        public static final String COLUMN_IS_FAVORITE = "is_favorite";
+        public static final String COLUMN_RUNTIME = "runtime";
+        public static final String COLUMN_VIDEOS = "videos";
 
 
         public static Uri buildMovieUri(long id) {

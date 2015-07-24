@@ -28,5 +28,8 @@
         <!-- Here it's a stub.  In screens of sufficient width, this style includes modifications
         for two-pane layout -->
     </style>
+    <style name="star">
+        <item name="android:button">@android:drawable/btn_star</item>
+    </style>
 
 </resources>

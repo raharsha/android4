@@ -32,8 +32,11 @@ import com.example.android.popularmovies.app.R;
 import com.example.android.popularmovies.app.Utility;
 import com.example.android.popularmovies.app.data.MovieContract;
 import com.uwetrottmann.tmdb.Tmdb;
+import com.uwetrottmann.tmdb.entities.AppendToResponse;
 import com.uwetrottmann.tmdb.entities.Movie;
 import com.uwetrottmann.tmdb.entities.MovieResultsPage;
+import com.uwetrottmann.tmdb.entities.Videos;
+import com.uwetrottmann.tmdb.enumerations.AppendToResponseItem;
 import com.uwetrottmann.tmdb.services.MoviesService;
 
 import org.json.JSONArray;
@@ -93,12 +96,25 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
             ContentValues weatherValues = new ContentValues();
             Movie movie = results.get(i);
             weatherValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.id);
+//            List<Videos.Video> videos = movieService.videos(movie.id, "en").results;
+            AppendToResponse atr = new AppendToResponse(AppendToResponseItem.VIDEOS);
+            Movie summary = movieService.summary(movie.id, "en", atr);
+            StringBuilder sb = new StringBuilder();
+            for (Videos.Video video : summary.videos.results) {
+                sb.append(video.key);
+                sb.append(",");
+            }
             weatherValues.put(MovieContract.MovieEntry.COLUMN_DATE, System.currentTimeMillis());
             weatherValues.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movie.original_title);
             weatherValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movie.overview);
             weatherValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.poster_path);
             weatherValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.release_date.getTime());
             weatherValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.vote_average);
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_RUNTIME, summary.runtime);
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_IS_CURRENT, 1);
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, 0);
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_VIDEOS, sb.toString());
+
 
             cVVector.add(weatherValues);
         }
@@ -107,12 +123,12 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
         if ( cVVector.size() > 0 ) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
             cVVector.toArray(cvArray);
+            // delete old data so we don't build up an endless history
+            getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                    null,
+                    null);
             getContext().getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, cvArray);
 
-            // delete old data so we don't build up an endless history
-//                getContext().getContentResolver().delete(MovieContract.WeatherEntry.CONTENT_URI,
-//                        MovieContract.WeatherEntry.COLUMN_DATE + " <= ?",
-//                        new String[] {Long.toString(dayTime.setJulianDay(julianStartDay-1))});
 
 //                notifyWeather();
         }

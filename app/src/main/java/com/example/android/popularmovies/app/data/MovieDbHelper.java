@@ -28,7 +28,7 @@ import com.example.android.popularmovies.app.data.MovieContract.MovieEntry;
 public class MovieDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 16;
 
     static final String DATABASE_NAME = "movies.db";
 
@@ -41,14 +41,18 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         // Create a table to hold locations.  A location consists of the string supplied in the
         // location setting, the city name, and the latitude and longitude
         final String SQL_CREATE_MOVIES_TABLE = "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + " (" +
-                MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY," +
+                MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 MovieContract.MovieEntry.COLUMN_DATE + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_MOVIE_ID + " TEXT UNIQUE NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " INTEGER NOT NULL, " +
-                MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " TEXT NOT NULL " +
+                MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " TEXT NOT NULL, " +
+                MovieEntry.COLUMN_RUNTIME + " INTEGER NULL, " +
+                MovieContract.MovieEntry.COLUMN_IS_FAVORITE + " INTEGER NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_IS_CURRENT + " INTEGER NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_VIDEOS + " TEXT NULL" +
                 " );";
 
 

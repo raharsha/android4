@@ -66,7 +66,9 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             MovieContract.MovieEntry.COLUMN_POSTER_PATH,
             MovieContract.MovieEntry.COLUMN_OVERVIEW,
             MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
-            MovieContract.MovieEntry.COLUMN_RELEASE_DATE
+            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+            MovieContract.MovieEntry.COLUMN_IS_CURRENT,
+            MovieContract.MovieEntry.COLUMN_IS_FAVORITE
     };
 
     // These indices are tied to MOVIE_COLUMNS.  If MOVIE_COLUMNS changes, these
@@ -79,6 +81,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     static final int COL_OVERVIEW = 5;
     static final int COL_VOTE_AVERAGE = 6;
     static final int COL_RELEASE_DATE = 7;
+    static final int COL_IS_CURRENT = 8;
+    static final int COL_IS_FAVORITE = 9;
 
 
     /**

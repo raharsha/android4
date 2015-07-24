@@ -12,14 +12,14 @@
         tools:context="com.example.haswath.popularmovies.MovieDetailActivity">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Large Text"
             android:id="@+id/textView"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:background="@android:color/holo_green_dark"
+            android:background="#ff009688"
             android:textColor="@android:color/white"
             android:padding="@android:dimen/app_icon_size" />
 
@@ -44,10 +44,28 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/tvRating"
+            android:id="@+id/tvLength"
             android:layout_below="@id/textView2"
             android:layout_toRightOf="@id/imageView"
             />
+        <TextView
+            android:layout_width="@android:dimen/thumbnail_width"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/tvRating"
+            android:layout_below="@id/tvLength"
+            android:layout_toRightOf="@id/imageView"
+            />
+        <CheckBox
+            android:id="@+id/star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            android:layout_toRightOf="@id/imageView"
+            android:layout_below="@id/tvRating"
+            style="?android:attr/starStyle" />
 
         <TextView
             android:layout_width="wrap_content"
