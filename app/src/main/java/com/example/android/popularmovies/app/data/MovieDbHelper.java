@@ -28,7 +28,7 @@ import com.example.android.popularmovies.app.data.MovieContract.MovieEntry;
 public class MovieDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
 
     static final String DATABASE_NAME = "movies.db";
 
@@ -52,7 +52,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_RUNTIME + " INTEGER NULL, " +
                 MovieContract.MovieEntry.COLUMN_IS_FAVORITE + " INTEGER NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_IS_CURRENT + " INTEGER NOT NULL, " +
-                MovieContract.MovieEntry.COLUMN_VIDEOS + " TEXT NULL" +
+                MovieContract.MovieEntry.COLUMN_VIDEOS + " TEXT NULL," +
+                MovieContract.MovieEntry.COLUMN_REVIEWS + " TEXT NULL" +
                 " );";
 
 

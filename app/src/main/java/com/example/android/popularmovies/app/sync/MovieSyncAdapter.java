@@ -35,6 +35,8 @@ import com.uwetrottmann.tmdb.Tmdb;
 import com.uwetrottmann.tmdb.entities.AppendToResponse;
 import com.uwetrottmann.tmdb.entities.Movie;
 import com.uwetrottmann.tmdb.entities.MovieResultsPage;
+import com.uwetrottmann.tmdb.entities.Review;
+import com.uwetrottmann.tmdb.entities.ReviewResultsPage;
 import com.uwetrottmann.tmdb.entities.Videos;
 import com.uwetrottmann.tmdb.enumerations.AppendToResponseItem;
 import com.uwetrottmann.tmdb.services.MoviesService;
@@ -96,9 +98,25 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
             ContentValues weatherValues = new ContentValues();
             Movie movie = results.get(i);
             weatherValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.id);
-//            List<Videos.Video> videos = movieService.videos(movie.id, "en").results;
+            List<Videos.Video> videos = movieService.videos(movie.id, "en").results;
             AppendToResponse atr = new AppendToResponse(AppendToResponseItem.VIDEOS);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             Movie summary = movieService.summary(movie.id, "en", atr);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ReviewResultsPage reviews = movieService.reviews(movie.id, 1, "en");
+            StringBuilder sb1 = new StringBuilder();
+            for(Review result : reviews.results) {
+                sb1.append(result.content);
+                sb1.append("REVIEW_SEPARATOR");
+            }
             StringBuilder sb = new StringBuilder();
             for (Videos.Video video : summary.videos.results) {
                 sb.append(video.key);
@@ -114,6 +132,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
             weatherValues.put(MovieContract.MovieEntry.COLUMN_IS_CURRENT, 1);
             weatherValues.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, 0);
             weatherValues.put(MovieContract.MovieEntry.COLUMN_VIDEOS, sb.toString());
+            weatherValues.put(MovieContract.MovieEntry.COLUMN_REVIEWS, sb1.toString());
 
 
             cVVector.add(weatherValues);
@@ -136,322 +155,10 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d(LOG_TAG, "Sync Complete. " + cVVector.size() + " Inserted");
 
 
-        // These two need to be declared outside the try/catch
-        // so that they can be closed in the finally block.
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
 
-        // Will contain the raw JSON response as a string.
-        String forecastJsonStr = null;
-
-        String format = "json";
-        String units = "metric";
-        int numDays = 14;
-
-        try {
-            // Construct the URL for the OpenWeatherMap query
-            // Possible parameters are avaiable at OWM's forecast API page, at
-            // http://openweathermap.org/API#forecast
-            final String FORECAST_BASE_URL =
-                    "http://api.openweathermap.org/data/2.5/forecast/daily?";
-            final String QUERY_PARAM = "q";
-            final String FORMAT_PARAM = "mode";
-            final String UNITS_PARAM = "units";
-            final String DAYS_PARAM = "cnt";
-
-            Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                    .appendQueryParameter(QUERY_PARAM, locationQuery)
-                    .appendQueryParameter(FORMAT_PARAM, format)
-                    .appendQueryParameter(UNITS_PARAM, units)
-                    .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
-                    .build();
-
-            URL url = new URL(builtUri.toString());
-
-            // Create the request to OpenWeatherMap, and open the connection
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            // Read the input stream into a String
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                // Nothing to do.
-                return;
-            }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                // But it does make debugging a *lot* easier if you print out the completed
-                // buffer for debugging.
-                buffer.append(line + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                // Stream was empty.  No point in parsing.
-                return;
-            }
-            forecastJsonStr = buffer.toString();
-            getWeatherDataFromJson(forecastJsonStr, locationQuery);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
-            // If the code didn't successfully get the weather data, there's no point in attempting
-            // to parse it.
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
-                }
-            }
-        }
-        return;
     }
 
-    /**
-     * Take the String representing the complete forecast in JSON Format and
-     * pull out the data we need to construct the Strings needed for the wireframes.
-     *
-     * Fortunately parsing is easy:  constructor takes the JSON string and converts it
-     * into an Object hierarchy for us.
-     */
-    private void getWeatherDataFromJson(String forecastJsonStr,
-                                        String locationSetting)
-            throws JSONException {
 
-        // Now we have a String representing the complete forecast in JSON Format.
-        // Fortunately parsing is easy:  constructor takes the JSON string and converts it
-        // into an Object hierarchy for us.
-
-        // These are the names of the JSON objects that need to be extracted.
-
-        // Location information
-        final String OWM_CITY = "city";
-        final String OWM_CITY_NAME = "name";
-        final String OWM_COORD = "coord";
-
-        // Location coordinate
-        final String OWM_LATITUDE = "lat";
-        final String OWM_LONGITUDE = "lon";
-
-        // Weather information.  Each day's forecast info is an element of the "list" array.
-        final String OWM_LIST = "list";
-
-        final String OWM_PRESSURE = "pressure";
-        final String OWM_HUMIDITY = "humidity";
-        final String OWM_WINDSPEED = "speed";
-        final String OWM_WIND_DIRECTION = "deg";
-
-        // All temperatures are children of the "temp" object.
-        final String OWM_TEMPERATURE = "temp";
-        final String OWM_MAX = "max";
-        final String OWM_MIN = "min";
-
-        final String OWM_WEATHER = "weather";
-        final String OWM_DESCRIPTION = "main";
-        final String OWM_WEATHER_ID = "id";
-
-        try {
-            JSONObject forecastJson = new JSONObject(forecastJsonStr);
-            JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
-
-            JSONObject cityJson = forecastJson.getJSONObject(OWM_CITY);
-            String cityName = cityJson.getString(OWM_CITY_NAME);
-
-            JSONObject cityCoord = cityJson.getJSONObject(OWM_COORD);
-            double cityLatitude = cityCoord.getDouble(OWM_LATITUDE);
-            double cityLongitude = cityCoord.getDouble(OWM_LONGITUDE);
-
-            long locationId = addLocation(locationSetting, cityName, cityLatitude, cityLongitude);
-
-            // Insert the new weather information into the database
-            Vector<ContentValues> cVVector = new Vector<ContentValues>(weatherArray.length());
-
-            // OWM returns daily forecasts based upon the local time of the city that is being
-            // asked for, which means that we need to know the GMT offset to translate this data
-            // properly.
-
-            // Since this data is also sent in-order and the first day is always the
-            // current day, we're going to take advantage of that to get a nice
-            // normalized UTC date for all of our weather.
-
-            Time dayTime = new Time();
-            dayTime.setToNow();
-
-            // we start at the day returned by local time. Otherwise this is a mess.
-            int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
-
-            // now we work exclusively in UTC
-            dayTime = new Time();
-
-            for(int i = 0; i < weatherArray.length(); i++) {
-                // These are the values that will be collected.
-                long dateTime;
-                double pressure;
-                int humidity;
-                double windSpeed;
-                double windDirection;
-
-                double high;
-                double low;
-
-                String description;
-                int weatherId;
-
-                // Get the JSON object representing the day
-                JSONObject dayForecast = weatherArray.getJSONObject(i);
-
-                // Cheating to convert this to UTC time, which is what we want anyhow
-                dateTime = dayTime.setJulianDay(julianStartDay+i);
-
-                pressure = dayForecast.getDouble(OWM_PRESSURE);
-                humidity = dayForecast.getInt(OWM_HUMIDITY);
-                windSpeed = dayForecast.getDouble(OWM_WINDSPEED);
-                windDirection = dayForecast.getDouble(OWM_WIND_DIRECTION);
-
-                // Description is in a child array called "weather", which is 1 element long.
-                // That element also contains a weather code.
-                JSONObject weatherObject =
-                        dayForecast.getJSONArray(OWM_WEATHER).getJSONObject(0);
-                description = weatherObject.getString(OWM_DESCRIPTION);
-                weatherId = weatherObject.getInt(OWM_WEATHER_ID);
-
-                // Temperatures are in a child object called "temp".  Try not to name variables
-                // "temp" when working with temperature.  It confuses everybody.
-                JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
-                high = temperatureObject.getDouble(OWM_MAX);
-                low = temperatureObject.getDouble(OWM_MIN);
-
-                ContentValues weatherValues = new ContentValues();
-
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_LOC_KEY, locationId);
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_DATE, dateTime);
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_HUMIDITY, humidity);
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_PRESSURE, pressure);
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_WIND_SPEED, windSpeed);
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_DEGREES, windDirection);
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_MAX_TEMP, high);
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_MIN_TEMP, low);
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_SHORT_DESC, description);
-//                weatherValues.put(MovieContract.WeatherEntry.COLUMN_WEATHER_ID, weatherId);
-//
-//                cVVector.add(weatherValues);
-            }
-
-            int inserted = 0;
-            // add to database
-            if ( cVVector.size() > 0 ) {
-                ContentValues[] cvArray = new ContentValues[cVVector.size()];
-                cVVector.toArray(cvArray);
-//                getContext().getContentResolver().bulkInsert(MovieContract.WeatherEntry.CONTENT_URI, cvArray);
-
-                // delete old data so we don't build up an endless history
-//                getContext().getContentResolver().delete(MovieContract.WeatherEntry.CONTENT_URI,
-//                        MovieContract.WeatherEntry.COLUMN_DATE + " <= ?",
-//                        new String[] {Long.toString(dayTime.setJulianDay(julianStartDay-1))});
-
-//                notifyWeather();
-            }
-
-            Log.d(LOG_TAG, "Sync Complete. " + cVVector.size() + " Inserted");
-
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
-        }
-    }
-
-//    private void notifyWeather() {
-//        Context context = getContext();
-//        //checking the last update and notify if it' the first of the day
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-//        String displayNotificationsKey = context.getString(R.string.pref_enable_notifications_key);
-//        boolean displayNotifications = prefs.getBoolean(displayNotificationsKey,
-//                Boolean.parseBoolean(context.getString(R.string.pref_enable_notifications_default)));
-//
-//        if ( displayNotifications ) {
-//
-//            String lastNotificationKey = context.getString(R.string.pref_last_notification);
-//            long lastSync = prefs.getLong(lastNotificationKey, 0);
-//
-//            if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
-//                // Last sync was more than 1 day ago, let's send a notification with the weather.
-//                String locationQuery = Utility.getPreferredLocation(context);
-//
-//                Uri weatherUri = MovieContract.WeatherEntry.buildWeatherLocationWithDate(locationQuery, System.currentTimeMillis());
-//
-//                // we'll query our contentProvider, as always
-//                Cursor cursor = context.getContentResolver().query(weatherUri, NOTIFY_WEATHER_PROJECTION, null, null, null);
-//
-//                if (cursor.moveToFirst()) {
-//                    int weatherId = cursor.getInt(INDEX_WEATHER_ID);
-//                    double high = cursor.getDouble(INDEX_MAX_TEMP);
-//                    double low = cursor.getDouble(INDEX_MIN_TEMP);
-//                    String desc = cursor.getString(INDEX_SHORT_DESC);
-//
-//                    int iconId = Utility.getIconResourceForWeatherCondition(weatherId);
-//                    Resources resources = context.getResources();
-//                    Bitmap largeIcon = BitmapFactory.decodeResource(resources,
-//                            Utility.getArtResourceForWeatherCondition(weatherId));
-//                    String title = context.getString(R.string.app_name);
-//
-//                    // Define the text of the forecast.
-//                    String contentText = String.format(context.getString(R.string.format_notification),
-//                            desc,
-//                            Utility.formatTemperature(context, high),
-//                            Utility.formatTemperature(context, low));
-//
-//                    // NotificationCompatBuilder is a very convenient way to build backward-compatible
-//                    // notifications.  Just throw in some data.
-//                    NotificationCompat.Builder mBuilder =
-//                            new NotificationCompat.Builder(getContext())
-//                                    .setColor(resources.getColor(R.color.sunshine_light_blue))
-//                                    .setSmallIcon(iconId)
-//                                    .setLargeIcon(largeIcon)
-//                                    .setContentTitle(title)
-//                                    .setContentText(contentText);
-//
-//                    // Make something interesting happen when the user clicks on the notification.
-//                    // In this case, opening the app is sufficient.
-//                    Intent resultIntent = new Intent(context, MainActivity.class);
-//
-//                    // The stack builder object will contain an artificial back stack for the
-//                    // started Activity.
-//                    // This ensures that navigating backward from the Activity leads out of
-//                    // your application to the Home screen.
-//                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-//                    stackBuilder.addNextIntent(resultIntent);
-//                    PendingIntent resultPendingIntent =
-//                            stackBuilder.getPendingIntent(
-//                                    0,
-//                                    PendingIntent.FLAG_UPDATE_CURRENT
-//                            );
-//                    mBuilder.setContentIntent(resultPendingIntent);
-//
-//                    NotificationManager mNotificationManager =
-//                            (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-//                    // WEATHER_NOTIFICATION_ID allows you to update the notification later on.
-//                    mNotificationManager.notify(WEATHER_NOTIFICATION_ID, mBuilder.build());
-//
-//                    //refreshing last sync
-//                    SharedPreferences.Editor editor = prefs.edit();
-//                    editor.putLong(lastNotificationKey, System.currentTimeMillis());
-//                    editor.commit();
-//                }
-//                cursor.close();
-//            }
-//        }
-//    }
 
     /**
      * Helper method to handle insertion of a new location in the weather database.

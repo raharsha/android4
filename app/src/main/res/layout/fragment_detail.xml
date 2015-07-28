@@ -95,8 +95,30 @@
             <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/tvtrhead"
                 android:id="@+id/lvTrailors" />
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:id="@+id/tvLine1"
+            android:background="#6F6C6C"
+            android:layout_below="@id/tvOverview"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Reviews:"
+            android:id="@+id/tvrevhead"
+            android:layout_below="@id/lvTrailors"
+            />
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvrevhead"
+            android:id="@+id/lvReviews" />
 
     </RelativeLayout>
 </ScrollView>

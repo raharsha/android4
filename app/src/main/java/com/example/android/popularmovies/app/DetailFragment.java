@@ -40,6 +40,9 @@ import android.widget.TextView;
 import com.example.android.popularmovies.app.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -65,7 +68,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
             MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
             MovieContract.MovieEntry.COLUMN_RUNTIME,
-            MovieContract.MovieEntry.COLUMN_VIDEOS
+            MovieContract.MovieEntry.COLUMN_VIDEOS,
+            MovieContract.MovieEntry.COLUMN_REVIEWS
     };
 
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
@@ -79,6 +83,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_MOVIE_DETAIL_RELEASE_DATE = 6;
     public static final int COL_MOVIE_DETAIL_RUNTIME = 7;
     public static final int COL_MOVIE_DETAIL_VIDEOS = 8;
+    public static final int COL_MOVIE_DETAIL_REVIEWS = 9;
 
     private ImageView mThumbnail;
     private TextView mYear;
@@ -91,6 +96,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mWindView;
     private TextView mPressureView;
     private ListView mTrailors;
+    private ListView mReviews;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -113,6 +119,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mRuntime = (TextView) rootView.findViewById(R.id.tvLength);
         mOverview = (TextView) rootView.findViewById(R.id.tvOverview);
         mTrailors = (ListView) rootView.findViewById(R.id.lvTrailors);
+        mReviews = (ListView) rootView.findViewById(R.id.lvReviews);
         return rootView;
     }
 
@@ -206,9 +213,16 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String overview = data.getString(COL_MOVIE_DETAIL_OVERVIEW);
             mOverview.setText(overview);
             String[] trailors = data.getString(COL_MOVIE_DETAIL_VIDEOS).split(",");
-//            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-//                    android.R.layout.list_item_trailer, trailors);
-//            mTrailors.setAdapter(adapter);
+            String reviewsStr = data.getString(COL_MOVIE_DETAIL_REVIEWS);
+            if (reviewsStr != null) {
+                String[] reviews = reviewsStr.split("REVIEW_SEPARATOR");
+                ReviewsAdapter reviewsAdapter = new ReviewsAdapter(getActivity(),
+                        android.R.layout.simple_list_item_1,reviews);
+                mReviews.setAdapter(reviewsAdapter);
+            }
+            TrailorAdapter adapter = new TrailorAdapter(getActivity(),
+                    android.R.layout.simple_list_item_1, trailors);
+            mTrailors.setAdapter(adapter);
 
 //
 //            // For accessibility, add a content rating to the icon field

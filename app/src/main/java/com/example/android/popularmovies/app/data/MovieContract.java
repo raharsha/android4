@@ -83,6 +83,7 @@ public class MovieContract {
         public static final String COLUMN_IS_FAVORITE = "is_favorite";
         public static final String COLUMN_RUNTIME = "runtime";
         public static final String COLUMN_VIDEOS = "videos";
+        public static final String COLUMN_REVIEWS = "reviews";
 
 
         public static Uri buildMovieUri(long id) {
