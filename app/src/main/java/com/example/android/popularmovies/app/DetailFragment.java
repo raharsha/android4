@@ -31,7 +31,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.app.data.MovieContract;
@@ -87,6 +90,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mHumidityView;
     private TextView mWindView;
     private TextView mPressureView;
+    private ListView mTrailors;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -108,6 +112,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mRating = (TextView) rootView.findViewById(R.id.tvRating);
         mRuntime = (TextView) rootView.findViewById(R.id.tvLength);
         mOverview = (TextView) rootView.findViewById(R.id.tvOverview);
+        mTrailors = (ListView) rootView.findViewById(R.id.lvTrailors);
         return rootView;
     }
 
@@ -200,6 +205,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
             String overview = data.getString(COL_MOVIE_DETAIL_OVERVIEW);
             mOverview.setText(overview);
+            String[] trailors = data.getString(COL_MOVIE_DETAIL_VIDEOS).split(",");
+//            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+//                    android.R.layout.list_item_trailer, trailors);
+//            mTrailors.setAdapter(adapter);
 
 //
 //            // For accessibility, add a content rating to the icon field

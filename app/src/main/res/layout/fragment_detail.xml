@@ -75,6 +75,27 @@
             android:id="@+id/tvOverview"
             android:layout_below="@id/imageView"
             />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:id="@+id/tvLine"
+            android:background="#6F6C6C"
+            android:layout_below="@id/tvOverview"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Trailors:"
+            android:id="@+id/tvtrhead"
+            android:layout_below="@id/tvLine"
+            />
+
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lvTrailors" />
 
 
     </RelativeLayout>
