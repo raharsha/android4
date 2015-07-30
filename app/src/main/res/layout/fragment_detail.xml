@@ -57,15 +57,15 @@
             android:layout_below="@id/tvLength"
             android:layout_toRightOf="@id/imageView"
             />
+
         <CheckBox
-            android:id="@+id/star"
+            android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:visibility="gone"
-            android:layout_toRightOf="@id/imageView"
             android:layout_below="@id/tvRating"
-            style="?android:attr/starStyle" />
+            android:layout_toRightOf="@id/imageView"
+            android:onClick="onToggleStar"
+            android:button="@android:drawable/btn_star"/>
 
         <TextView
             android:layout_width="wrap_content"

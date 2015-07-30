@@ -15,11 +15,18 @@
  */
 package com.example.android.popularmovies.app;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.TextView;
+
+import com.example.android.popularmovies.app.data.MovieContract;
 
 
 public class DetailActivity extends ActionBarActivity {
@@ -63,5 +70,25 @@ public class DetailActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onToggleStar(View view) {
+        CheckBox fav = (CheckBox) view.findViewById(R.id.favorite_button);
+        TextView title = (TextView) view.findViewById(R.id.textView);
+
+        if (fav.isChecked()) {
+            Log.i("checked", "checked");
+//            ContentValues weatherValues = new ContentValues();
+//            weatherValues.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, 0);
+//            CharSequence titleText1 = title.getText();
+//            if (titleText1 != null) {
+//                String titleText = titleText1.toString();
+//                String[] selectionArgs = new String[]{titleText};
+//
+//                view.getContext().getContentResolver().update(MovieContract.MovieEntry.CONTENT_URI,
+//                        weatherValues, MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE + " = ", selectionArgs);
+//            }
+
+        }
     }
 }

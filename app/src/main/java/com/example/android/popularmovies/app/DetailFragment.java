@@ -15,6 +15,7 @@
  */
 package com.example.android.popularmovies.app;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -32,6 +33,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -69,7 +72,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
             MovieContract.MovieEntry.COLUMN_RUNTIME,
             MovieContract.MovieEntry.COLUMN_VIDEOS,
-            MovieContract.MovieEntry.COLUMN_REVIEWS
+            MovieContract.MovieEntry.COLUMN_REVIEWS,
+            MovieContract.MovieEntry.COLUMN_IS_FAVORITE
     };
 
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
@@ -84,6 +88,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_MOVIE_DETAIL_RUNTIME = 7;
     public static final int COL_MOVIE_DETAIL_VIDEOS = 8;
     public static final int COL_MOVIE_DETAIL_REVIEWS = 9;
+    public static final int COL_MOVIE_DETAIL_IS_FAVORITE = 10;
+
+    private static final String sMovieSelection =
+            MovieContract.MovieEntry.TABLE_NAME+
+                    "." + MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE + " = ? ";
+
 
     private ImageView mThumbnail;
     private TextView mYear;
@@ -97,6 +107,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mPressureView;
     private ListView mTrailors;
     private ListView mReviews;
+    private CheckBox mFav;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -120,6 +131,25 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mOverview = (TextView) rootView.findViewById(R.id.tvOverview);
         mTrailors = (ListView) rootView.findViewById(R.id.lvTrailors);
         mReviews = (ListView) rootView.findViewById(R.id.lvReviews);
+        mFav = (CheckBox) rootView.findViewById(R.id.favorite_button);
+        CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    ContentValues weatherValues = new ContentValues();
+                    weatherValues.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, isChecked ? 1 : 0);
+                    CharSequence titleText1 = mTitle.getText();
+                    if (titleText1 != null) {
+                        String titleText = titleText1.toString();
+                        String[] selectionArgs = new String[]{titleText};
+
+                        compoundButton.getContext().getContentResolver().update(MovieContract.MovieEntry.CONTENT_URI,
+                                weatherValues, sMovieSelection, selectionArgs);
+                    }
+
+                }
+        };
+        mFav.setOnCheckedChangeListener(listener);
+
         return rootView;
     }
 
@@ -223,6 +253,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             TrailorAdapter adapter = new TrailorAdapter(getActivity(),
                     android.R.layout.simple_list_item_1, trailors);
             mTrailors.setAdapter(adapter);
+
+            if (data.getInt(COL_MOVIE_DETAIL_IS_FAVORITE) == 1) {
+                mFav.setChecked(true);
+            }
 
 //
 //            // For accessibility, add a content rating to the icon field
