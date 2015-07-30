@@ -16,6 +16,7 @@
 package com.example.android.popularmovies.app;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +24,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,7 +44,7 @@ import com.example.android.popularmovies.app.sync.MovieSyncAdapter;
  */
 public class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String LOG_TAG = MoviesFragment.class.getSimpleName();
-    private MoviesAdapter mMoviesAdapter;
+    private SimpleCursorRecyclerAdapter mMoviesAdapter;
 
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
@@ -136,30 +139,44 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
         // The MoviesAdapter will take data from a source and
         // use it to populate the ListView it's attached to.
-        mMoviesAdapter = new MoviesAdapter(getActivity(), null, 0);
+        mMoviesAdapter = new SimpleCursorRecyclerAdapter(getActivity(), R.layout.list_item_forecast, null);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        // Get a reference to the ListView, and attach this adapter to it.
-        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        mListView.setAdapter(mMoviesAdapter);
-        // We'll call our MainActivity
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rvUsers);
+        recyclerView.setHasFixedSize(true);
+        // First param is number of columns and second param is orientation i.e Vertical or Horizontal
+        final GridLayoutManager gridLayoutManager =
+                new GridLayoutManager(getActivity(), 2, LinearLayoutManager.VERTICAL, false);
+        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gridLayoutManager.setSpanCount(4);
+        }
+        recyclerView.setAdapter(mMoviesAdapter);
+        // Attach the layout manager to the recycler view
+        recyclerView.setLayoutManager(gridLayoutManager);
 
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                // CursorAdapter returns a cursor at the correct position for getItem(), or null
-                // if it cannot seek to that position.
-                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (cursor != null) {
-                    String locationSetting = Utility.getPreferredLocation(getActivity());
-                    ((Callback) getActivity())
-                            .onItemSelected(MovieContract.MovieEntry.buildMovieWithId(cursor.getLong(COL_MOVIE_ID)
-                            ));
-                }
-                mPosition = position;
-            }
-        });
+
+
+        // Get a reference to the ListView, and attach this adapter to it.
+//        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+//        mListView.setAdapter(mMoviesAdapter);
+        // We'll call our MainActivity
+//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                // CursorAdapter returns a cursor at the correct position for getItem(), or null
+//                // if it cannot seek to that position.
+//                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+//                if (cursor != null) {
+//                    String locationSetting = Utility.getPreferredLocation(getActivity());
+//                    ((Callback) getActivity())
+//                            .onItemSelected(MovieContract.MovieEntry.buildMovieWithId(cursor.getLong(COL_MOVIE_ID)
+//                            ));
+//                }
+//                mPosition = position;
+//            }
+//        });
 
         // If there's instance state, mine it for useful information.
         // The end-goal here is that the user never knows that turning their device sideways
@@ -172,7 +189,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
 
-        mMoviesAdapter.setUseTodayLayout(mUseTodayLayout);
+        //mMoviesAdapter.setUseTodayLayout(mUseTodayLayout);
 
         return rootView;
     }
@@ -274,8 +291,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
     public void setUseTodayLayout(boolean useTodayLayout) {
         mUseTodayLayout = useTodayLayout;
-        if (mMoviesAdapter != null) {
-            mMoviesAdapter.setUseTodayLayout(mUseTodayLayout);
-        }
+//        if (mMoviesAdapter != null) {
+//            mMoviesAdapter.setUseTodayLayout(mUseTodayLayout);
+//        }
     }
 }
