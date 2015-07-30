@@ -129,10 +129,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         inflater.inflate(R.menu.detailfragment, menu);
 
         // Retrieve the share menu item
-        MenuItem menuItem = menu.findItem(R.id.action_share);
+//        MenuItem menuItem = menu.findItem(R.id.action_share);
 
         // Get the provider and hold onto it to set/change the share intent.
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+//        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
         // If onLoadFinished happens before this, we can go ahead and set the share intent now.
         if (mForecast != null) {
@@ -154,12 +154,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         super.onActivityCreated(savedInstanceState);
     }
 
-    void onLocationChanged( String newLocation ) {
+    void onSortbyChanged(String newSortby) {
         // replace the uri, since the location has changed
         Uri uri = mUri;
         if (null != uri) {
-//            long date = MovieContract.WeatherEntry.getDateFromUri(uri);
-//            Uri updatedUri = MovieContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+//            long date = MovieContract.MovieEntry.getDateFromUri(uri);
+//            Uri updatedUri = MovieContract.WeatherEntry.buildWeatherLocationWithDate(newSortby, date);
 //            mUri = updatedUri;
 //            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
         }

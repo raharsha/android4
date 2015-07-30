@@ -33,7 +33,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.popularmovies.app.data.MovieContract;
@@ -86,6 +85,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     static final int COL_RELEASE_DATE = 7;
     static final int COL_IS_CURRENT = 8;
     static final int COL_IS_FAVORITE = 9;
+    private RecyclerView recyclerView;
 
 
     /**
@@ -122,13 +122,13 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 //        if (id == R.id.action_refresh) {
-//            updateWeather();
+//            updateMovies();
 //            return true;
 //        }
-        if (id == R.id.action_map) {
-            openPreferredLocationInMap();
-            return true;
-        }
+//        if (id == R.id.action_map) {
+//            openPreferredLocationInMap();
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -143,7 +143,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rvUsers);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.rvUsers);
         recyclerView.setHasFixedSize(true);
         // First param is number of columns and second param is orientation i.e Vertical or Horizontal
         final GridLayoutManager gridLayoutManager =
@@ -169,7 +169,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 //                // if it cannot seek to that position.
 //                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
 //                if (cursor != null) {
-//                    String locationSetting = Utility.getPreferredLocation(getActivity());
+//                    String locationSetting = Utility.getPreferredSortBy(getActivity());
 //                    ((Callback) getActivity())
 //                            .onItemSelected(MovieContract.MovieEntry.buildMovieWithId(cursor.getLong(COL_MOVIE_ID)
 //                            ));
@@ -201,12 +201,13 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     // since we read the location when we create the loader, all we need to do is restart things
-    void onLocationChanged( ) {
-        updateWeather();
+    void onSortbyChanged() {
+        recyclerView.removeAllViews();
+        updateMovies();
         getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
     }
 
-    private void updateWeather() {
+    private void updateMovies() {
         MovieSyncAdapter.syncImmediately(getActivity());
     }
 
@@ -257,15 +258,9 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         // Sort order:  Ascending, by date.
         String sortOrder = MovieContract.MovieEntry.COLUMN_DATE + " ASC";
 
-        String locationSetting = Utility.getPreferredLocation(getActivity());
+        String locationSetting = Utility.getPreferredSortBy(getActivity());
         Uri weatherForLocationUri = MovieContract.MovieEntry.buildWeatherLocationWithStartDate();
 
-//        return new CursorLoader(getActivity(),
-//                weatherForLocationUri,
-//                FORECAST_COLUMNS,
-//                null,
-//                null,
-//                sortOrder);
         return new CursorLoader(getActivity(),
                 weatherForLocationUri,
                 MOVIE_COLUMNS,

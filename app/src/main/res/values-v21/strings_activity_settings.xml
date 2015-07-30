@@ -10,10 +10,12 @@
     <string-array name="pref_example_list_titles">
         <item>Popularity</item>
         <item>Ratings</item>
+        <item>Favorites</item>
     </string-array>
     <string-array name="pref_example_list_values">
         <item>popularity.desc</item>
         <item>vote_average.desc</item>
+        <item>favorites</item>
     </string-array>
 
 

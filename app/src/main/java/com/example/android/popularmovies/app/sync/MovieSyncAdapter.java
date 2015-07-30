@@ -2,32 +2,17 @@ package com.example.android.popularmovies.app.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
-import android.text.format.Time;
 import android.util.Log;
 
-import com.example.android.popularmovies.app.MainActivity;
 import com.example.android.popularmovies.app.R;
 import com.example.android.popularmovies.app.Utility;
 import com.example.android.popularmovies.app.data.MovieContract;
@@ -41,16 +26,6 @@ import com.uwetrottmann.tmdb.entities.Videos;
 import com.uwetrottmann.tmdb.enumerations.AppendToResponseItem;
 import com.uwetrottmann.tmdb.services.MoviesService;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 import java.util.Vector;
 
@@ -89,9 +64,16 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.d(LOG_TAG, "Starting sync");
-        String locationQuery = Utility.getPreferredLocation(getContext());
+        String sortBy = Utility.getPreferredSortBy(getContext());
+        MovieResultsPage movies = null;
 
-        MovieResultsPage movies = movieService.popular(1, "en");
+        if (sortBy.equals(getContext().getString(R.string.pref_sortby_popularity))) {
+            movies = movieService.popular(1, "en");
+        } else if (sortBy.equals(getContext().getString(R.string.pref_sortby_ratings))) {
+            movies = movieService.topRated(1, "en");
+        } else {
+            //TODO
+        }
         List<Movie> results = movies.results;
         Vector<ContentValues> cVVector = new Vector<ContentValues>(results.size());
         for (int i = 0; i < results.size(); i++) {

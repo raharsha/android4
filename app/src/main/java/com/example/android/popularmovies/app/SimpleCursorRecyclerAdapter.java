@@ -53,14 +53,14 @@ public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleVie
     public SimpleViewHolder onCreateViewHolder (ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(mLayout, parent, false);
-        return new SimpleViewHolder(v, context);
+        return new SimpleViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, Cursor cursor) {
-        holder.setCursor(cursor);
-        String url = null;
-        url = "http://image.tmdb.org/t/p/w185" + cursor.getString(MoviesFragment.COL_POSTER_PATH);
+        long movieId = cursor.getLong(MoviesFragment.COL_MOVIE_ID);
+        holder.setMovieId(movieId);
+        String url = "http://image.tmdb.org/t/p/w185" + cursor.getString(MoviesFragment.COL_POSTER_PATH);
         Picasso.with(context).load(url).into(holder.iconView);
     }
 
@@ -73,33 +73,26 @@ public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleVie
 
 class SimpleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 {
-    //public TextView[] views;
     public final ImageView iconView;
-    private final Context context;
-    private Cursor cursor;
     private long movieId;
 
-    public SimpleViewHolder(View itemView, Context context)
+    public SimpleViewHolder(View itemView)
     {
         super(itemView);
         iconView = (ImageView) itemView.findViewById(R.id.imageView1);
-        this.context = context;
         itemView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
 
-        int position = getLayoutPosition(); // gets item position
-//        Cursor cursor = getcu;//(Cursor) view.getItemAtPosition(position);
-        if (cursor != null) {
+        if (movieId != 0) {
             ((MoviesFragment.Callback) view.getContext())
                     .onItemSelected(MovieContract.MovieEntry.buildMovieWithId(movieId));
         }
     }
 
-    public void setCursor(Cursor cursor) {
-        movieId = cursor.getLong(MoviesFragment.COL_MOVIE_ID);
-        this.cursor = cursor;
+    public void setMovieId(long movieId) {
+        this.movieId = movieId;
     }
 }
