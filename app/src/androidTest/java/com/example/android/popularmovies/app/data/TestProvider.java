@@ -370,7 +370,7 @@ public class TestProvider extends AndroidTestCase {
 //
 //        // Get the joined Weather and Location data with a start date
 //        weatherCursor = mContext.getContentResolver().query(
-//                WeatherEntry.buildWeatherLocationWithStartDate(
+//                WeatherEntry.buildMoviesUri(
 //                        TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
 //                null, // leaving "columns" null just returns all the columns.
 //                null, // cols for "where" clause

@@ -256,17 +256,31 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         // dates after or including today.
 
         // Sort order:  Ascending, by date.
+        String sortBy = Utility.getPreferredSortBy(getActivity());
         String sortOrder = MovieContract.MovieEntry.COLUMN_DATE + " ASC";
 
-        String locationSetting = Utility.getPreferredSortBy(getActivity());
-        Uri weatherForLocationUri = MovieContract.MovieEntry.buildWeatherLocationWithStartDate();
+        if (sortBy.contains("favorites")) {
 
-        return new CursorLoader(getActivity(),
-                weatherForLocationUri,
-                MOVIE_COLUMNS,
-                null,
-                null,
-                sortOrder);
+            Uri favMovies = MovieContract.MovieEntry.buildFavMovies();
+
+            return new CursorLoader(getActivity(),
+                    favMovies,
+                    MOVIE_COLUMNS,
+                    null,
+                    null,
+                    sortOrder);
+
+        } else {
+
+            Uri moviesUri = MovieContract.MovieEntry.buildMoviesUri();
+
+            return new CursorLoader(getActivity(),
+                    moviesUri,
+                    MOVIE_COLUMNS,
+                    null,
+                    null,
+                    sortOrder);
+        }
     }
 
     @Override

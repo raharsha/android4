@@ -73,6 +73,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
             movies = movieService.topRated(1, "en");
         } else {
             //TODO
+            return;
         }
         List<Movie> results = movies.results;
         Vector<ContentValues> cVVector = new Vector<ContentValues>(results.size());

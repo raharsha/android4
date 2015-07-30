@@ -32,6 +32,7 @@ public class MovieProvider extends ContentProvider {
 
     static final int WEATHER = 100;
     static final int MOVIE = 400;
+    static final int FAV_MOVIE = 500;
     static final int MOVIE_WITH_ID = 410;
     static final int WEATHER_WITH_LOCATION = 101;
     static final int WEATHER_WITH_LOCATION_AND_DATE = 102;
@@ -60,6 +61,9 @@ public class MovieProvider extends ContentProvider {
     private static final String sMovieSelection =
             MovieContract.MovieEntry.TABLE_NAME+
                     "." + MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? ";
+    private static final String sFavMovieSelection =
+            MovieContract.MovieEntry.TABLE_NAME+
+                    "." + MovieContract.MovieEntry.COLUMN_IS_FAVORITE + " = 1 ";
 
 
     //location.location_setting = ? AND date = ?
@@ -74,6 +78,20 @@ public class MovieProvider extends ContentProvider {
 
         String selection = sMovieSelection;
         String[] selectionArgs = new String[]{movieId};
+
+        return sMovieByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+    private Cursor getFavMovies(Uri uri, String[] projection, String sortOrder) {
+
+        String selection = sFavMovieSelection;
+        String[] selectionArgs = null;
 
         return sMovieByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
@@ -108,6 +126,7 @@ public class MovieProvider extends ContentProvider {
 
         matcher.addURI(authority, MovieContract.PATH_LOCATION, LOCATION);
         matcher.addURI(authority, MovieContract.PATH_MOVIES, MOVIE);
+        matcher.addURI(authority, MovieContract.PATH_FAV_MOVIES, FAV_MOVIE);
         matcher.addURI(authority, MovieContract.PATH_MOVIES + "/*", MOVIE_WITH_ID);
         return matcher;
     }
@@ -141,6 +160,8 @@ public class MovieProvider extends ContentProvider {
 //                return MovieContract.WeatherEntry.CONTENT_TYPE;
             case MOVIE:
                 return MovieContract.MovieEntry.CONTENT_TYPE;
+            case FAV_MOVIE:
+                return MovieContract.MovieEntry.CONTENT_TYPE;
             case MOVIE_WITH_ID:
                 return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
 //            case WEATHER:
@@ -170,6 +191,10 @@ public class MovieProvider extends ContentProvider {
                         null,
                         sortOrder
                 );
+                break;
+            }
+            case FAV_MOVIE: {
+                retCursor = getFavMovies(uri, projection, sortOrder);
                 break;
             }
             case MOVIE_WITH_ID: {

@@ -44,6 +44,7 @@ public class MovieContract {
     public static final String PATH_WEATHER = "weather";
     public static final String PATH_LOCATION = "location";
     public static final String PATH_MOVIES = "movies";
+    public static final String PATH_FAV_MOVIES = "favmovies";
 
     // To make it easy to query for the exact date, we normalize all dates that go into
     // the database to the start of the the Julian day at UTC.
@@ -59,6 +60,8 @@ public class MovieContract {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).build();
+        public static final Uri CONTENT_URI_FAV_MOVIES =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAV_MOVIES).build();
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIES;
@@ -94,12 +97,17 @@ public class MovieContract {
             return CONTENT_URI.buildUpon().build();
         }
 
-        public static Uri buildWeatherLocationWithStartDate() {
+        public static Uri buildMoviesUri() {
             return CONTENT_URI.buildUpon().build();
         }
 
         public static Uri buildMovieWithId(long movieId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(movieId))
+                    .build();
+        }
+
+        public static Uri buildFavMovies() {
+            return CONTENT_URI_FAV_MOVIES.buildUpon()
                     .build();
         }
 
