@@ -16,7 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
             android:id="@+id/textView"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
@@ -25,17 +24,17 @@
             android:padding="@android:dimen/app_icon_size" />
 
         <ImageView
-            android:layout_width="@android:dimen/thumbnail_width"
-            android:layout_height="@android:dimen/thumbnail_height"
+            android:layout_width="@dimen/thumbnail_width"
+            android:layout_height="@dimen/thumbnail_height"
             android:id="@+id/imageView"
             android:layout_below="@id/textView"
-            />
+            android:layout_margin="@dimen/item_offset"
+            android:padding="@dimen/item_offset" />
 
         <TextView
             android:layout_width="@android:dimen/thumbnail_width"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
             android:id="@+id/textView2"
             android:layout_below="@id/textView"
             android:layout_toRightOf="@id/imageView"
@@ -44,7 +43,6 @@
             android:layout_width="@android:dimen/thumbnail_width"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
             android:id="@+id/tvLength"
             android:layout_below="@id/textView2"
             android:layout_toRightOf="@id/imageView"
@@ -54,7 +52,6 @@
             android:layout_width="@android:dimen/thumbnail_width"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
             android:id="@+id/tvRating"
             android:layout_below="@id/tvLength"
             android:layout_toRightOf="@id/imageView"
@@ -66,7 +63,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvRating"
             android:layout_toRightOf="@id/imageView"
-            android:onClick="onToggleStar"
             android:button="@android:drawable/btn_star"/>
 
 
@@ -74,7 +70,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
             android:id="@+id/tvOverview"
             android:layout_below="@id/imageView"
             />

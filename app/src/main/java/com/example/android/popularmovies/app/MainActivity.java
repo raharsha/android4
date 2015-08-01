@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
 
         MoviesFragment moviesFragment =  ((MoviesFragment)getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_forecast));
-        moviesFragment.setUseTodayLayout(!mTwoPane);
+        moviesFragment.setUseTodayLayout(mTwoPane);
 
         MovieSyncAdapter.initializeSyncAdapter(this);
     }

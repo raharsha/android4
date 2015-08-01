@@ -148,9 +148,12 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         // First param is number of columns and second param is orientation i.e Vertical or Horizontal
         final GridLayoutManager gridLayoutManager =
                 new GridLayoutManager(getActivity(), 2, LinearLayoutManager.VERTICAL, false);
-        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            gridLayoutManager.setSpanCount(4);
+        if(!mUseTodayLayout && getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gridLayoutManager.setSpanCount(2);
+        } else {
+            gridLayoutManager.setSpanCount(2);
         }
+        recyclerView.addItemDecoration(new SpacesItemDecoration(0));
         recyclerView.setAdapter(mMoviesAdapter);
         // Attach the layout manager to the recycler view
         recyclerView.setLayoutManager(gridLayoutManager);

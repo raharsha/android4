@@ -16,13 +16,13 @@
         android:name="com.example.android.popularmovies.app.MoviesFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="3"
         tools:layout="@android:layout/list_content" />
 
     <FrameLayout
         android:id="@+id/weather_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4" />
+        android:layout_weight="3" />
 
 </LinearLayout>

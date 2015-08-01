@@ -159,10 +159,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         inflater.inflate(R.menu.detailfragment, menu);
 
         // Retrieve the share menu item
-//        MenuItem menuItem = menu.findItem(R.id.action_share);
+        MenuItem menuItem = menu.findItem(R.id.action_share);
 
         // Get the provider and hold onto it to set/change the share intent.
-//        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
         // If onLoadFinished happens before this, we can go ahead and set the share intent now.
         if (mForecast != null) {
@@ -174,7 +174,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, mForecast + FORECAST_SHARE_HASHTAG);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, mForecast );
         return shareIntent;
     }
 
@@ -242,7 +242,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
             String overview = data.getString(COL_MOVIE_DETAIL_OVERVIEW);
             mOverview.setText(overview);
-            String[] trailors = data.getString(COL_MOVIE_DETAIL_VIDEOS).split(",");
+            String trailorsStr = data.getString(COL_MOVIE_DETAIL_VIDEOS);
+            String[] trailors = null;
+            if (trailorsStr != null) {
+                trailors = trailorsStr.split(",");
+            }
             String reviewsStr = data.getString(COL_MOVIE_DETAIL_REVIEWS);
             if (reviewsStr != null) {
                 String[] reviews = reviewsStr.split("REVIEW_SEPARATOR");
@@ -250,10 +254,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                         android.R.layout.simple_list_item_1,reviews);
                 mReviews.setAdapter(reviewsAdapter);
             }
-            TrailorAdapter adapter = new TrailorAdapter(getActivity(),
-                    android.R.layout.simple_list_item_1, trailors);
-            mTrailors.setAdapter(adapter);
-
+            if (trailors != null) {
+                TrailorAdapter adapter = new TrailorAdapter(getActivity(),
+                        android.R.layout.simple_list_item_1, trailors);
+                mTrailors.setAdapter(adapter);
+                mForecast = "http://www.youtube.com/watch?v="+trailors[0];
+            }
             if (data.getInt(COL_MOVIE_DETAIL_IS_FAVORITE) == 1) {
                 mFav.setChecked(true);
             }
@@ -294,6 +300,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 //            if (mShareActionProvider != null) {
 //                mShareActionProvider.setShareIntent(createShareForecastIntent());
 //            }
+            if (mShareActionProvider != null) {
+                mShareActionProvider.setShareIntent(createShareForecastIntent());
+            }
         }
     }
 
